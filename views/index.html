@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient List - Medical Practice Management</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="window-container">
+      <!-- Navigation Bar -->
+      <div class="nav-bar">
+        <div class="nav-item">📋 Suspend</div>
+        <div class="nav-item">💳 Charges</div>
+        <div class="nav-item">🚪 Exit</div>
+        <div class="nav-item">🔢 Calculator</div>
+        <div class="nav-item">➕ Add-Hoc</div>
+        <div class="nav-item">🏠 Home</div>
+        <div class="nav-item">❤️ Cardiovascular</div>
+        <div class="nav-item active">📋 Patient List</div>
+        <div class="nav-item">📊 Perioperative Tracking</div>
+        <div class="nav-item">📋 Provider Handoff</div>
+        <div class="nav-item">💬 Message Center</div>
+        <div class="nav-item">🔄 Dynamic Worklist</div>
+        <div class="nav-item">📝 Referral Management</div>
+        <div class="nav-item">💡 Propo...</div>
+        <div class="nav-item">🔄 UpToDate</div>
+        <div class="nav-item">📊 DA2</div>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <div class="tab active">
+          Medway
+          <span class="tab-close">×</span>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="header">
+        <h1>Patient List</h1>
+        <div class="header-right">
+          <div class="user-info">
+            <span>Medway</span>
+            <select style="font-size: 10px">
+              <option>Recent</option>
+            </select>
+          </div>
+          <div>🔍 Search</div>
+          <div>⚙️</div>
+          <div>📄 Full screen</div>
+          <div>🖨️ Print</div>
+          <div>🔄 12 minutes ago</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-btn">🔍</div>
+        <div class="toolbar-btn">📄</div>
+        <div class="toolbar-btn">✏️</div>
+        <div class="toolbar-btn">🗑️</div>
+        <div class="toolbar-btn">📋</div>
+        <div class="toolbar-btn">🔧</div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-btn">📊</div>
+        <div class="toolbar-btn">📈</div>
+        <div class="toolbar-btn">💾</div>
+        <div class="toolbar-btn">🖨️</div>
+        <div class="toolbar-btn">📧</div>
+        <div class="toolbar-btn">🔄</div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-btn">⚙️</div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <div class="section-title">Medway Patients</div>
+
+        <table class="patient-table">
+          <thead>
+            <tr>
+              <th class="checkbox-col">📋</th>
+              <th class="location-col">Location</th>
+              <th class="name-col">Name</th>
+              <th class="mrn-col">MRN</th>
+              <th class="fin-col">FIN</th>
+              <th class="age-col">Age</th>
+              <th class="dob-col">DOB</th>
+              <th class="admitted-col">Admitted</th>
+              <th class="physician-col">Admitting Physician</th>
+              <th class="reason-col">Visit Reason</th>
+              <th class="primary-care-col">Primary Care Physician</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="window.location.href='/patient-list/12724069'">
+              <td class="checkbox-col"></td>
+              <td class="location-col">
+                <div class="clinic-location">MV Clinic 2</div>
+              </td>
+              <td class="name-col">
+                <!-- <div class="patient-name"><a href="http://localhost:3000/patient-list/12724069">SMART, TIMMY</a></div> -->
+                <div class="patient-name">SMART, TIMMY</div>
+                <div class="patient-id">Test 0000010745</div>
+              </td>
+              <td class="mrn-col">0000010745</td>
+              <td class="fin-col">26 years</td>
+              <td class="age-col">1/1/1999</td>
+              <td class="dob-col">9/19/2023 3:00 PM CDT</td>
+              <td class="admitted-col"></td>
+              <td class="physician-col"></td>
+              <td class="reason-col">Book appointment form slot</td>
+              <td class="primary-care-col"></td>
+            </tr>
+            <tr
+              class="selected"
+              onclick="window.location.href='/patient-list/12742399?access_token={{access_token}}'"
+            >
+              <td class="checkbox-col"></td>
+              <td class="location-col">
+                <div class="clinic-location">NU02</div>
+              </td>
+              <td class="name-col">
+                <div class="patient-name">SMART, SANDY</div>
+              </td>
+              <td class="mrn-col">0049110543</td>
+              <td class="fin-col">0000969163</td>
+              <td class="age-col">39 years</td>
+              <td class="dob-col">4/16/1985</td>
+              <td class="admitted-col">10/6/2020 3:06 PM CDT</td>
+              <td class="physician-col">
+                Center Test, Physician - Gastroenterology Center Test, FHIR Base
+                patient - DO NOT USE
+              </td>
+              <td class="reason-col">Abdominal Pain</td>
+              <td class="primary-care-col">Carter, Kristin Cerner</td>
+            </tr>
+            <tr onclick="window.location.href='/patient-list/12724067'">
+              <td class="checkbox-col"></td>
+              <td class="location-col">
+                <div class="clinic-location">MV Clinic 2</div>
+              </td>
+              <td class="name-col">
+                <div class="patient-name">SMART, JOE</div>
+              </td>
+              <td class="mrn-col">0049110540</td>
+              <td class="fin-col">0099661409</td>
+              <td class="age-col">39 years</td>
+              <td class="dob-col">1/31/1986</td>
+              <td class="admitted-col">10/6/2020 3:06 PM CDT</td>
+              <td class="physician-col">
+                Center Test, Physician - Gastroenterology Center Test, FHIR Base
+                patient - DO NOT USE
+              </td>
+              <td class="reason-col"></td>
+              <td class="primary-care-col">Carter, Kristin Cerner</td>
+            </tr>
+            <tr onclick="window.location.href='/patient-list/12724071'">
+              <td class="checkbox-col"></td>
+              <td class="location-col">
+                <div class="clinic-location">MV Clinic 2</div>
+              </td>
+              <td class="name-col">
+                <div class="patient-name">SMART, Valerie</div>
+              </td>
+              <td class="mrn-col">0049110513</td>
+              <td class="fin-col">0000059813</td>
+              <td class="age-col">38 years</td>
+              <td class="dob-col">9/1/1986</td>
+              <td class="admitted-col">4/13/2023 4:00 PM CDT</td>
+              <td class="physician-col"></td>
+              <td class="reason-col">I am an established patient</td>
+              <td class="primary-care-col">Carter, Kristin Cerner</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // Add interactivity
+      document.querySelectorAll(".patient-table tbody tr").forEach((row) => {
+        row.addEventListener("click", function () {
+          // Remove selected class from all rows
+          document
+            .querySelectorAll(".patient-table tbody tr")
+            .forEach((r) => r.classList.remove("selected"));
+          // Add selected class to clicked row
+          this.classList.add("selected");
+        });
+      });
+
+      // Toolbar button hover effects
+      document.querySelectorAll(".toolbar-btn").forEach((btn) => {
+        btn.addEventListener("mouseenter", function () {
+          this.style.background = "#ffffff";
+          this.style.borderColor = "#999";
+        });
+
+        btn.addEventListener("mouseleave", function () {
+          this.style.background = "#f0f0f0";
+          this.style.borderColor = "#ccc";
+        });
+      });
+
+      // Tab functionality
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", function () {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

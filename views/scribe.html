@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EHR Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 12px;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .top-nav {
+            background: #fff;
+            padding: 5px 10px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        /* Patient Header */
+        .patient-header {
+            background: #027FC9;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4a90e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+
+        .patient-details {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .patient-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        /* Sub Navigation */
+        .sub-nav {
+            background: #e6f3ff;
+            padding: 8px 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 2px 5px;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .toolbar {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar button {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 3px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .toolbar button:hover {
+            background: #e0e0e0;
+        }
+
+        /* Main Content Area */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: #f8f8f8;
+            border-right: 1px solid #ddd;
+            padding: 10px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -200px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-item {
+            padding: 5px 8px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+
+        .sidebar-item:hover {
+            background: #e0e0e0;
+        }
+
+        .sidebar-item.active {
+            background: #4a90e2;
+            color: white;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 15px;
+            background: white;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .section-header {
+            background: #f8f8f8;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .section-header:hover {
+            background: #f0f0f0;
+        }
+
+        .section-content {
+            padding: 15px;
+        }
+
+        .section-content.collapsed {
+            display: none;
+        }
+
+        /* Care Pathways */
+        .pathways-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .pathway-column {
+            flex: 1;
+        }
+
+        .pathway-header {
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .pathway-list {
+            border: 1px solid #ddd;
+            min-height: 60px;
+            padding: 8px;
+            background: white;
+        }
+
+        .pathway-item {
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            background: #f8f8f8;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+
+        /* Text Editor */
+        .text-editor {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .editor-toolbar {
+            background: #f8f8f8;
+            padding: 5px 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .editor-toolbar select {
+            font-size: 11px;
+            padding: 2px 5px;
+            border: 1px solid #ccc;
+        }
+
+        .editor-toolbar button {
+            background: none;
+            border: none;
+            padding: 3px 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .editor-toolbar button:hover {
+            background: #e0e0e0;
+        }
+
+        .editor-content {
+            min-height: 100px;
+            padding: 10px;
+            border: none;
+            outline: none;
+            resize: vertical;
+            width: 100%;
+        }
+
+        /* Home Medications */
+        .medications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .external-records {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .external-icon {
+            width: 16px;
+            height: 16px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .info-message {
+            background: #e6f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            background: #4a90e2;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+            padding: 20px;
+        }
+
+        /* Documents Section */
+        .documents-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 5px;
+        }
+
+        .time-filter {
+            padding: 3px 8px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .time-filter:hover {
+            background: #e0e0e0;
+        }
+
+        .document-options {
+            display: flex;
+            gap: 5px;
+        }
+
+        .document-btn {
+            padding: 3px 8px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .document-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Vital Signs */
+        .vital-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .vital-timeline {
+            display: flex;
+            gap: 5px;
+        }
+
+        .vital-filter {
+            padding: 3px 8px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .vital-filter.active {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .vital-icons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .vital-icon {
+            width: 20px;
+            height: 20px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .vital-icon:hover {
+            background: #e0e0e0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pathways-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: absolute;
+                z-index: 1000;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Tear Off</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Suspend</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Charges</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Exit</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Calculator</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>AdHoc</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Cardiovascular</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Patient List</span>
+        </div>
+        <div class="nav-item">
+            <span>Perioperative Tracking</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Provider Handoff</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Message Center</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Dynamic Worklist</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Referral Management</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>UpToDate</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>DA2</span>
+        </div>
+    </div>
+
+    <!-- Patient Header -->
+    <div class="patient-header">
+        <div class="patient-avatar">CT</div>
+        <div class="patient-info">
+            <div class="patient-name">John Doe</div>
+            <div class="patient-details">
+                Aliases: Shellfish<br>
+                Care Team: Carter, Kristin Cerner
+            </div>
+        </div>
+        <div class="patient-meta">
+          <div>
+            <div>DOB:4/16/1986</div>
+            <div>Age:39 years</div>
+            <div>MRN:00491105458</div>
+            <div>Sex:Female</div>
+          </div>
+          <div>
+            <div>Dose Wt:<No Data Available></div>
+            <div>Advance Directive:</div>
+            <div>Code Status:<No Data Available></div>
+            <div>Location:<No Data Available></div>
+          </div>
+          <div>
+            <div>Height:c: No</div>
+            <div>Clinical Trial:<No Data Available></div>
+            <div>Loc</div>
+            <div>Outpatient FIN: 0000299162 (Reg Dt: <No - Registration date>) Vis...</div>
+          </div>
+        </div>
+        <div class="patient-actions">
+            <button class="nav-item">← List</button>
+            <button class="nav-item">Recent ▼</button>
+            <div style="margin-left: 10px;">Notifications</div>
+        </div>
+    </div>
+
+    <!-- Sub Navigation -->
+    <div class="sub-nav">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">←</button>
+        <span class="breadcrumb">Provider View - Edge</span>
+        <div class="toolbar">
+            <button>🔍</button>
+            <button>⚙️</button>
+            <button>70%</button>
+            <button>🔄</button>
+            <button>⏰</button>
+            <button>📄</button>
+            <button>🖨️</button>
+            <span style="font-size: 11px;">🔄 11 minutes ago</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Ambulatory Workflow</div>
+                <div class="sidebar-item active">Provider View</div>
+                <div class="sidebar-item">Orders</div>
+                <div class="sidebar-item">Results</div>
+                <div class="sidebar-item">Medications</div>
+                <div class="sidebar-item">Clinical Summary</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Patient Tools</div>
+                <div class="sidebar-item">Allergies</div>
+                <div class="sidebar-item">Problems</div>
+                <div class="sidebar-item">Medications</div>
+                <div class="sidebar-item">Immunizations</div>
+                <div class="sidebar-item">Vital Signs</div>
+                <div class="sidebar-item">Scribe</div>
+                <div class="sidebar-item">IDRS</div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h1>Scribe</h1>
+            <div id="session-container"></div>
+        </div>
+    </div>
+    <script type="module" src="https://microfrontend.blob.core.windows.net/session-microfront/session-web-component-dev.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('span:last-child');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                arrow.textContent = '▼';
+            } else {
+                content.classList.add('collapsed');
+                arrow.textContent = '▶';
+            }
+        }
+
+        // Initialize some sections as collapsed
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can add any initialization code here
+        });
+
+        // fetch the access token from the backend
+        fetch("http://localhost:3000/token")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching access token:', error);   
+            });
+
+        // get the patient id from the url
+        const patientId = window.location.pathname.split('/').pop();
+        console.log("patientId scribe", patientId);
+
+        const sessionContainer = document.getElementById('session-container');
+        // add a loading message
+        sessionContainer.innerHTML = `
+            <div>Loading...</div>
+        `;
+
+        fetch(`http://localhost:3000/patient/${patientId}/data`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                sessionContainer.innerHTML = `
+                    <session-web-component session-id="${data.sessionId}" access-token="${data.access_token}" patient-name="${data.patientName}"></session-web-component>
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching patient data:', error);   
+            });
+    </script>
+</body>
+</html>

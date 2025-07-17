@@ -1,0 +1,306 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+    sans-serif;
+  font-size: 11px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Top Navigation Bar */
+.nav-bar {
+  background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+  border-bottom: 1px solid #999;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  font-size: 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+  margin-right: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.nav-item.active {
+  background: linear-gradient(to bottom, #4a90e2, #357abd);
+  color: white;
+  font-weight: bold;
+}
+
+.nav-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 3px;
+  background-size: contain;
+}
+
+/* Tab Bar */
+.tab-bar {
+  background: #004b7b;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.tab {
+  background: linear-gradient(to bottom, #ffffff, #e8e8e8);
+  border-bottom: none;
+  padding: 3px 12px;
+  margin-right: 2px;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  font-size: 10px;
+  color: #0066cc;
+  font-weight: bold;
+}
+
+.tab.active {
+  background: #0472b9;
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+.tab-close {
+  margin-left: 5px;
+  color: #999;
+  cursor: pointer;
+}
+
+.tab-close:hover {
+  color: #666;
+}
+
+/* Header */
+.header {
+  background: #0472b9;
+  padding: 8px 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 14px;
+  font-weight: normal;
+  color: #ffffff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  color: #ffffff;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Toolbar */
+.toolbar {
+  background: #006aab;
+  border-bottom: 1px solid #ccc;
+  padding: 3px 5px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbar-btn {
+  width: 20px;
+  height: 20px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.toolbar-btn:hover {
+  background: #ffffff;
+  border-color: #999;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 16px;
+  background: #ccc;
+  margin: 0 2px;
+}
+
+/* Content Area */
+.content {
+  background: #ffffff;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Patient Table */
+.patient-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.patient-table th {
+  background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  text-align: left;
+  font-weight: normal;
+  color: #333;
+  white-space: nowrap;
+}
+
+.patient-table .selected .patient-name {
+  color: #fff;
+}
+
+.patient-table td {
+  border: 1px solid #ddd;
+  padding: 3px 6px;
+  vertical-align: top;
+}
+
+.patient-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.patient-table tr:hover {
+  background: #e8f4ff;
+}
+
+.patient-table tr.selected {
+  background: #316ac5;
+  color: white;
+}
+
+.patient-table tr.selected td {
+  border-color: #2a5ba1;
+}
+
+.checkbox-col {
+  width: 20px;
+  text-align: center;
+}
+
+.location-col {
+  width: 80px;
+}
+
+.name-col {
+  width: 120px;
+}
+
+.mrn-col {
+  width: 100px;
+}
+
+.fin-col {
+  width: 100px;
+}
+
+.age-col {
+  width: 50px;
+}
+
+.dob-col {
+  width: 80px;
+}
+
+.admitted-col {
+  width: 120px;
+}
+
+.physician-col {
+  width: 150px;
+}
+
+.reason-col {
+  width: 200px;
+}
+
+.primary-care-col {
+  width: 150px;
+}
+
+.patient-name {
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.patient-id {
+  color: #666;
+}
+
+.clinic-location {
+  color: #666;
+  font-size: 9px;
+}
+
+.window-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Status indicators */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.status-red {
+  background: #ff4444;
+}
+
+.status-yellow {
+  background: #ffcc00;
+}
+
+.status-green {
+  background: #44ff44;
+}

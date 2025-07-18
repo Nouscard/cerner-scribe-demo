@@ -1,7 +1,35 @@
 {
-    "routes": [
-      {
-        "route": "/*"
-      }
-    ]
+  "routes": [
+    {
+      "route": "/",
+      "serve": "/auth"
+    },
+    {
+      "route": "/patient-list/*",
+      "serve": "/patient-list/*"
+    },
+    {
+      "route": "/scribe/*",
+      "serve": "/scribe/*"
+    },
+    {
+      "route": "/idrs",
+      "serve": "/idrs"
+    },
+    {
+      "route": "/token",
+      "serve": "/token"
+    },
+    {
+      "route": "/patient/*/data",
+      "serve": "/patient/*/data"
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html"
   }
+}

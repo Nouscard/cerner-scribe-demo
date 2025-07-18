@@ -2,19 +2,27 @@
   "routes": [
     {
       "route": "/",
+      "serve": "/index.html"
+    },
+    {
+      "route": "/auth",
       "serve": "/auth"
     },
     {
+      "route": "/login-callback",
+      "serve": "/login-callback"
+    },
+    {
       "route": "/patient-list/*",
-      "serve": "/patient-list/*"
+      "serve": "/patient-list.html"
     },
     {
       "route": "/scribe/*",
-      "serve": "/scribe/*"
+      "serve": "/scribe.html"
     },
     {
       "route": "/idrs",
-      "serve": "/idrs"
+      "serve": "/idrs.html"
     },
     {
       "route": "/token",
@@ -25,11 +33,30 @@
       "serve": "/patient/*/data"
     },
     {
+      "route": "/style.css",
+      "serve": "/style.css"
+    },
+    {
       "route": "/*",
       "serve": "/index.html"
     }
   ],
   "navigationFallback": {
-    "rewrite": "/index.html"
-  }
+    "rewrite": "/index.html",
+    "exclude": [
+      "/api/*",
+      "/token",
+      "/patient/*/data",
+      "/auth",
+      "/login-callback",
+      "/style.css",
+      "*.{png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}"
+    ]
+  },
+  "platformErrorOverrides": [
+    {
+      "errorType": "NotFound",
+      "serve": "/index.html"
+    }
+  ]
 }

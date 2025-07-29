@@ -18,7 +18,9 @@ const STATE = "12345";
 
 // Middleware
 app.use(express.json());
-app.use(express.static("views"));
+app.use(express.static("views", {
+  index: false // This prevents automatic serving of index.html
+}));
 
 // Helper function to make FHIR API calls with retry mechanism
 async function makeFhirRequest(url, accessToken, maxRetries = 4) {
@@ -80,12 +82,8 @@ async function makeFhirRequest(url, accessToken, maxRetries = 4) {
   throw lastError;
 }
 
-// Entry point
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/views/index.html");
-});
 
-app.get("/auth", (req, res) => {
+app.get("/", (req, res) => {
   const authUrl = `${AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
     REDIRECT_URI
   )}&scope=${encodeURIComponent(
@@ -94,6 +92,10 @@ app.get("/auth", (req, res) => {
 
   res.redirect(authUrl);
 });
+// Entry point
+// app.get("/dashboard", (req, res) => {
+//     return res.sendFile(__dirname + "/views/index.html");
+// });
 
 app.get("/patient-list/:patientId", (req, res) => {
   res.sendFile(__dirname + "/views/patient-list.html");
@@ -197,8 +199,6 @@ app.get("/patient/:patientId/data", async (req, res) => {
       headers
     )
 
-  console.log("Medway token response:", medway_token_response.data);
-
   let config = {
     method: "post",
     maxBodyLength: Infinity,
@@ -211,13 +211,28 @@ app.get("/patient/:patientId/data", async (req, res) => {
     data: sessionData,
   };
 
-  axios
+  let user_token = "";
+
+  token_data = axios.post("https://apigateway.medway.ai/logic-lane-be/auth/login", {
+    "email": "org1user1@gmail.com",
+    "password": "Test@123",
+  }, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((response) => {
+    console.log("Token data:", response.data);
+    user_token = response.data.token;
+
+    axios
     .request(config)
     .then((response) => {
       sessionId = response.data.data.session.sessionId;
       let responseData = {
         sessionId: sessionId,
         access_token: medway_token_response.data.access_token,
+        user_token: user_token,
         patientName: patient.name[0].given[0] + " " + patient.name[0].family,
       };
       return res.json(responseData);
@@ -225,6 +240,10 @@ app.get("/patient/:patientId/data", async (req, res) => {
     .catch((error) => {
       return res.status(500).send(`Error creating session: ${error.message}`);
     });
+  })
+  .catch((error) => {
+    console.error("Error getting token data:", error);
+  });
 });
 
 // Error handling middleware

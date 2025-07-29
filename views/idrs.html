@@ -146,8 +146,12 @@
                 <div class="sidebar-item">Medications</div>
                 <div class="sidebar-item">Immunizations</div>
                 <div class="sidebar-item">Vital Signs</div>
-                <div class="sidebar-item">Scribe</div>
-                <div class="sidebar-item">IDRS</div>
+                <div class="sidebar-item">
+                    <a href="/scribe">Scribe</a>
+                </div>
+                <div class="sidebar-item">
+                    <a href="/idrs">IDRS</a>
+                </div>
             </div>
         </div>
 
@@ -202,19 +206,21 @@
             <div>Loading...</div>
         `;
 
+        let medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
+
         fetch(`http://localhost:3000/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 sessionContainer.innerHTML = `
-                    <chat-module access-token="eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqRkx1eGFmaWxidUpKRERSVzZ6akdtdlFyQnNndFlFOFdtc1N4NzVwOXpjIn0.eyJleHAiOjE3NTM4MTAxNzUsImlhdCI6MTc1Mzc4MTM3NSwianRpIjoiY2VmZWVmOWMtODVlMi00ODZiLTg2YmUtZDdmOTJkYjFmYTcxIiwiaXNzIjoiaHR0cHM6Ly9rZXlzZXJ2aWNlc2Rldi5tZWR3YXkuYWkvcmVhbG1zL21lZHdheWFpIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjljMmE4MWU3LTUwMTctNDI2Yi05MzQ4LTc0YTJmZDMyOTc0OCIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1lZHdheWFpLWNvcmUiLCJzaWQiOiI5ZjI2Yzc5Yy02ODFmLTQ5NDUtODgwYi03N2RmM2Y5NjMzZmMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidXNlciIsImRlZmF1bHQtcm9sZXMtbWVkd2F5YWkiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6Im9yZzF1c2VyMUBnbWFpbC5jb20iLCJlbWFpbCI6Im9yZzF1c2VyMUBnbWFpbC5jb20ifQ.rgncHIQNknnu-xkl4qb5gFQIsaUdxGB5p4p58_NwmM_vVWm13B6j1x4Oa3b44mjrnmAZsOPpwhlIQ-X3-He6Tx15l5FGHhEULd5xx1Lsi1DbmLomL9NLyyTVM6M51JlfiTTYWMbEGGgB2IOdmS0vlndSKWwjkwi90h83v0TMzBbLGRxiZID60eqDczIzesBAST0wqJVOVsa75FlQOqk0m-UqNWgvpWhmku0k8ZQxkYhzYA18RZ-WYX5g_t1jvdj_yqzdwMiuJr23e5hL9BbGtQTeS79bl-ayumxxL5N6LA_kGgVWqQvLsEXyQjrSlmSeWnIBJ_Xuz-whRYQUOP03og" patient-id="44ddec32-a189-492e-83e6-230866b0cfa0" thread-id="54"></chat-module>
+                    <chat-module access-token="${data.user_token}" patient-id="${medway_user_id}" thread-id="54"></chat-module>
                 `;
-                // <chat-web-component session-id="${data.sessionId}" access-token="${data.access_token}" patient-name="${data.patientName}"></chat-web-component>
-
             })
             .catch(error => {
                 console.error('Error fetching patient data:', error);   
             });
+
+        document.querySelector('a[href="/scribe"]').href = `/scribe/${patientId}`;
     </script>
 </body>
 </html>

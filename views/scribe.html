@@ -146,8 +146,12 @@
                 <div class="sidebar-item">Medications</div>
                 <div class="sidebar-item">Immunizations</div>
                 <div class="sidebar-item">Vital Signs</div>
-                <div class="sidebar-item">Scribe</div>
-                <div class="sidebar-item">IDRS</div>
+                <div class="sidebar-item">
+                    <a href="/scribe">Scribe</a>
+                </div>
+                <div class="sidebar-item">
+                    <a href="/idrs">IDRS</a>
+                </div>
             </div>
         </div>
 
@@ -213,6 +217,8 @@
             .catch(error => {
                 console.error('Error fetching patient data:', error);   
             });
+
+        document.querySelector('a[href="/idrs"]').href = `/idrs/${patientId}`;
     </script>
 </body>
 </html>

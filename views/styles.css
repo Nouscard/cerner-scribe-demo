@@ -431,6 +431,11 @@ body {
   background: #e0e0e0;
 }
 
+#session-container {
+  width: 90%;
+  height: 90%;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .pathways-container {

@@ -43,11 +43,12 @@ body {
 
 /* Patient Header */
 .patient-header {
-  background: #027fc9;
+  background: #027BBD;
   color: #fff;
   padding: 10px;
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   gap: 15px;
 }
 
@@ -65,6 +66,13 @@ body {
 
 .patient-info {
   flex: 1;
+}
+
+.patient-vitals {
+  display: flex;
+  flex: 9;
+  justify-content: space-between;
+  gap: 15px;
 }
 
 .patient-name {
@@ -88,7 +96,7 @@ body {
 
 /* Sub Navigation */
 .sub-nav {
-  background: #e6f3ff;
+  background: #196194;
   padding: 8px 10px;
   border-bottom: 1px solid #ccc;
   display: flex;
@@ -106,7 +114,7 @@ body {
 
 .breadcrumb {
   font-size: 11px;
-  color: #666;
+  color: #fff;
 }
 
 .toolbar {
@@ -138,7 +146,8 @@ body {
 /* Sidebar */
 .sidebar {
   width: 200px;
-  background: #f8f8f8;
+  background: #196194;
+  color: #fff;
   border-right: 1px solid #ddd;
   padding: 10px;
   transition: margin-left 0.3s ease;
@@ -150,21 +159,28 @@ body {
 
 .sidebar-section {
   margin-bottom: 15px;
+  background-color: #196194;
 }
 
 .sidebar-title {
   font-size: 11px;
   font-weight: bold;
-  color: #666;
+  color: #fff;
   margin-bottom: 5px;
   text-transform: uppercase;
 }
 
 .sidebar-item {
   padding: 5px 8px;
+  border-bottom: 1px solid #fff;
   cursor: pointer;
   border-radius: 2px;
   font-size: 11px;
+}
+
+.sidebar-item a {
+  text-decoration: none;
+  color: #fff;
 }
 
 .sidebar-item:hover {

@@ -78,36 +78,33 @@
     <div class="patient-header">
         <div class="patient-avatar">CT</div>
         <div class="patient-info">
-            <div class="patient-name">John Doe</div>
+            <div class="patient-name">Patrick King</div>
             <div class="patient-details">
                 Aliases: Shellfish<br>
                 Care Team: Carter, Kristin Cerner
             </div>
         </div>
-        <div class="patient-meta">
-          <div>
-            <div>DOB:4/16/1986</div>
-            <div>Age:39 years</div>
-            <div>MRN:00491105458</div>
-            <div>Sex:Female</div>
-          </div>
-          <div>
-            <div>Dose Wt:<No Data Available></div>
-            <div>Advance Directive:</div>
-            <div>Code Status:<No Data Available></div>
-            <div>Location:<No Data Available></div>
-          </div>
-          <div>
-            <div>Height:c: No</div>
-            <div>Clinical Trial:<No Data Available></div>
-            <div>Loc</div>
-            <div>Outpatient FIN: 0000299162 (Reg Dt: <No - Registration date>) Vis...</div>
-          </div>
-        </div>
-        <div class="patient-actions">
-            <button class="nav-item">← List</button>
-            <button class="nav-item">Recent ▼</button>
-            <div style="margin-left: 10px;">Notifications</div>
+        <div class="patient-vitals">
+            <div>
+                <div>DOB:4/16/1986</div>
+                <div>Age:39 years</div>
+                <div>MRN:00491105458</div>
+            </div>
+            <div>
+                <div>Sex:Female</div>
+                <div>Dose Wt:100lbs</div>
+                <div>Code Status:Active</div>
+            </div>
+            <div>
+                <div>Height:c: No</div>
+                <div>Clinical Trial:<No Data Available></div>
+                <div>Location:No Data Available</div>
+            </div>
+            <div>
+                <div>Isolation:<No Data Available></div>
+                <div>DT: 0000299162 (Reg Dt: <No - Registration date>) Vis...</div>
+                <div>Observation FIN: 0000299162</div>
+            </div>
         </div>
     </div>
 
@@ -132,7 +129,7 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-section">
-                <div class="sidebar-title">Ambulatory Workflow</div>
+                <div class="sidebar-title">Menu</div>
                 <div class="sidebar-item active">Provider View</div>
                 <div class="sidebar-item">Orders</div>
                 <div class="sidebar-item">Results</div>
@@ -211,7 +208,7 @@
             .then(data => {
                 console.log(data);
                 sessionContainer.innerHTML = `
-                    <session-web-component session-id="${data.sessionId}" access-token="${data.access_token}" patient-name="${data.patientName}"></session-web-component>
+                    <session-web-component session-id="${data.sessionId}" access-token="${data.access_token}" patient-name="${data.patientName}" popup="true"></session-web-component>
                 `;
             })
             .catch(error => {

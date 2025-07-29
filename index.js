@@ -18,9 +18,11 @@ const STATE = "12345";
 
 // Middleware
 app.use(express.json());
-app.use(express.static("views", {
-  index: false // This prevents automatic serving of index.html
-}));
+app.use(
+  express.static("views", {
+    index: false, // This prevents automatic serving of index.html
+  })
+);
 
 // Helper function to make FHIR API calls with retry mechanism
 async function makeFhirRequest(url, accessToken, maxRetries = 4) {
@@ -81,7 +83,6 @@ async function makeFhirRequest(url, accessToken, maxRetries = 4) {
   console.error(`All ${maxRetries} attempts failed. Last error:`, lastError);
   throw lastError;
 }
-
 
 app.get("/", (req, res) => {
   const authUrl = `${AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
@@ -160,24 +161,12 @@ app.get("/idrs/:patientId", (req, res) => {
 });
 
 app.get("/token", async (req, res) => {
-  console.log("MEDWAY_TOKEN:", launchContexts.get("MEDWAY_TOKEN"));
   res.json({ access_token: launchContexts.get("MEDWAY_TOKEN") });
 });
 
 app.get("/patient/:patientId/data", async (req, res) => {
   const { patientId } = req.params;
   const access_token = launchContexts.get("access_token");
-  const observationData = await makeFhirRequest(
-    `/Observation?patient=${patientId}&_count=1`,
-    access_token
-  );
-  let sessionData = {
-    data: {
-      observation: observationData,
-    },
-  };
-
-  const patient = await makeFhirRequest(`/Patient/${patientId}`, access_token);
 
   const medway_client_id = "External-Partner-Org";
   const medway_client_secret = "ZM5ox7nRTyWku7JHXwQBDOqD1fiyNdh6";
@@ -192,12 +181,11 @@ app.get("/patient/:patientId/data", async (req, res) => {
     grant_type: "client_credentials",
   });
 
-  const medway_token_response = await axios
-    .post(
-      "https://keyservicesdev.medway.ai/auth/realms/medwayai/protocol/openid-connect/token",
-      urlencoded_data,
-      headers
-    )
+  const medway_token_response = await axios.post(
+    "https://keyservicesdev.medway.ai/auth/realms/medwayai/protocol/openid-connect/token",
+    urlencoded_data,
+    headers
+  );
 
   let config = {
     method: "post",
@@ -208,42 +196,51 @@ app.get("/patient/:patientId/data", async (req, res) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${medway_token_response.data.access_token}`,
     },
-    data: sessionData,
+    data: {
+      patientId: patientId,
+    },
   };
 
   let user_token = "";
 
-  token_data = axios.post("https://apigateway.medway.ai/logic-lane-be/auth/login", {
-    "email": "org1user1@gmail.com",
-    "password": "Test@123",
-  }, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then((response) => {
-    console.log("Token data:", response.data);
-    user_token = response.data.token;
-
-    axios
-    .request(config)
+  token_data = axios
+    .post(
+      "https://apigateway.medway.ai/logic-lane-be/auth/login",
+      {
+        email: "org1user1@gmail.com",
+        password: "Test@123",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
-      sessionId = response.data.data.session.sessionId;
-      let responseData = {
-        sessionId: sessionId,
-        access_token: medway_token_response.data.access_token,
-        user_token: user_token,
-        patientName: patient.name[0].given[0] + " " + patient.name[0].family,
-      };
-      return res.json(responseData);
+      console.log("Token data:", response.data);
+      user_token = response.data.token;
+
+      axios
+        .request(config)
+        .then((response) => {
+          sessionId = response.data.data.session.sessionId;
+          let responseData = {
+            sessionId: sessionId,
+            access_token: medway_token_response.data.access_token,
+            user_token: user_token,
+            patientName: "Patrick King",
+          };
+          return res.json(responseData);
+        })
+        .catch((error) => {
+          return res
+            .status(500)
+            .send(`Error creating session: ${error.message}`);
+        });
     })
     .catch((error) => {
-      return res.status(500).send(`Error creating session: ${error.message}`);
+      console.error("Error getting token data:", error);
     });
-  })
-  .catch((error) => {
-    console.error("Error getting token data:", error);
-  });
 });
 
 // Error handling middleware

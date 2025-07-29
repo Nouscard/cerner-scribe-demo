@@ -796,6 +796,7 @@
         const patientId = window.location.pathname.split('/').pop();
         console.log("patientId", patientId);
         document.querySelector('a[href="/scribe"]').href = `/scribe/${patientId}`;
+        document.querySelector('a[href="/idrs"]').href = `/idrs/${patientId}`;
     </script>
 </body>
 </html>

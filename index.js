@@ -15,8 +15,6 @@ const {
   SCOPES,
 } = process.env;
 const STATE = "12345";
-const MEDWAY_TOKEN =
-  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqRkx1eGFmaWxidUpKRERSVzZ6akdtdlFyQnNndFlFOFdtc1N4NzVwOXpjIn0.eyJleHAiOjE3NTI3ODU2OTYsImlhdCI6MTc1Mjc1Njg5NiwianRpIjoiMjlhZmEyNzYtYTFkYS00NWRlLWFiOTAtMjI5NGJiOWE4MmZmIiwiaXNzIjoiaHR0cHM6Ly9rZXlzZXJ2aWNlc2Rldi5tZWR3YXkuYWkvcmVhbG1zL21lZHdheWFpIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjY0NWE4NmEwLWMxYTUtNDZhNC1hNWY4LTcxNzBmZWM2OTk2OCIsInR5cCI6IkJlYXJlciIsImF6cCI6IkV4dGVybmFsLVBhcnRuZXItT3JnIiwic2lkIjoiNTM2NTE0ZjItMTU4My00ZTFmLTgxMGYtMWQ0NDFjMjQzNWZmIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtbWVkd2F5YWkiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX0sIkV4dGVybmFsLVBhcnRuZXItT3JnIjp7InJvbGVzIjpbInVtYV9wcm90ZWN0aW9uIl19fSwic2NvcGUiOiJwcm9maWxlIGN1c3RvbV9vcmdhbml6YXRpb24gZW1haWwiLCJjbGllbnRIb3N0IjoiMTAyLjIyLjE2Mi4xNTAiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InNlcnZpY2UiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtZXh0ZXJuYWwtcGFydG5lci1vcmciLCJjdXN0b21fb3JnYW5pemF0aW9uIjoiOTUiLCJnaXZlbl9uYW1lIjoic2VydmljZSIsImNsaWVudEFkZHJlc3MiOiIxMDIuMjIuMTYyLjE1MCIsImVtYWlsIjoic2VydmljZS1hY2NvdW50LWV4dGVybmFsLXBhcnRuZXItb3JnQG1lZHdheS5haSIsImNsaWVudF9pZCI6IkV4dGVybmFsLVBhcnRuZXItT3JnIn0.BCgSmfyJlwxqvDqH0iOp4d-iamaGMhn7rFcquWvHFrBc6RQwXQGm_PFPzA1XnLnhVfeFlLJXKfpxyfMzaNV7qpszd8cy3LGW7v54BPGGz2FBJSJpGvpc-Rs-cH7I8BspEijzSot9ePtTQ6QZ9ijrmeaUcyScVCc2hAgQAaA8f1tBvLvIMUmz7VEGJ11m_q00FZDifkaxFvVJwluNHY75eAyaobWjuOUkvoCFS2DuZjqeKGLrGleMKgOQIqtJa85WeH4dvCVST-AKYkdPFc4JTV2DaNLoAcd8FxFxBythTHN4KpRS34vGAB_e-RJpYrAoqAsvxuWPV-5_e-bfnzbO4g";
 
 // Middleware
 app.use(express.json());
@@ -25,14 +23,17 @@ app.use(express.static("views"));
 // Helper function to make FHIR API calls with retry mechanism
 async function makeFhirRequest(url, accessToken, maxRetries = 4) {
   let lastError;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const baseUrl = FHIR_BASE;
       console.log(`Attempt ${attempt}/${maxRetries} - baseUrl:`, baseUrl);
       console.log(`Attempt ${attempt}/${maxRetries} - url:`, url);
-      console.log(`Attempt ${attempt}/${maxRetries} - accessToken:`, accessToken);
-      
+      console.log(
+        `Attempt ${attempt}/${maxRetries} - accessToken:`,
+        accessToken
+      );
+
       const response = await axios.get(`${baseUrl}${url}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -40,28 +41,40 @@ async function makeFhirRequest(url, accessToken, maxRetries = 4) {
           "Content-Type": "application/fhir+json",
         },
       });
-      
+
       // Check if status is 200
       if (response.status === 200) {
-        console.log(`Attempt ${attempt}/${maxRetries} - Success! Response:`, response.data);
+        console.log(
+          `Attempt ${attempt}/${maxRetries} - Success! Response:`,
+          response.data
+        );
         return response.data;
       } else {
-        console.log(`Attempt ${attempt}/${maxRetries} - Non-200 status: ${response.status}`);
-        lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+        console.log(
+          `Attempt ${attempt}/${maxRetries} - Non-200 status: ${response.status}`
+        );
+        lastError = new Error(
+          `HTTP ${response.status}: ${response.statusText}`
+        );
       }
     } catch (error) {
-      console.error(`Attempt ${attempt}/${maxRetries} - FHIR API Error:`, error.response?.data || error.message);
+      console.error(
+        `Attempt ${attempt}/${maxRetries} - FHIR API Error:`,
+        error.response?.data || error.message
+      );
       lastError = error;
     }
-    
+
     // If this isn't the last attempt, wait before retrying
     if (attempt < maxRetries) {
       const delay = Math.pow(2, attempt - 1) * 1000; // Exponential backoff: 1s, 2s, 4s
-      console.log(`Attempt ${attempt}/${maxRetries} - Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      console.log(
+        `Attempt ${attempt}/${maxRetries} - Retrying in ${delay}ms...`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  
+
   // All attempts failed
   console.error(`All ${maxRetries} attempts failed. Last error:`, lastError);
   throw lastError;
@@ -69,7 +82,7 @@ async function makeFhirRequest(url, accessToken, maxRetries = 4) {
 
 // Entry point
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/views/index.html");
+    res.sendFile(__dirname + "/views/index.html");
 });
 
 app.get("/auth", (req, res) => {
@@ -122,6 +135,7 @@ app.get("/login-callback", async (req, res) => {
     const { access_token, id_token } = response.data;
     launchContexts.set("access_token", access_token);
     launchContexts.set("id_token", id_token);
+
     res.sendFile(__dirname + "/views/index.html");
   } catch (error) {
     console.error(
@@ -135,15 +149,17 @@ app.get("/login-callback", async (req, res) => {
 app.get("/scribe/:patientId", (req, res) => {
   const { patientId } = req.params;
   res.sendFile(__dirname + "/views/scribe.html", { patientId });
-  res.sendFile(__dirname + "/views/scribe.html");
+  // res.sendFile(__dirname + "/views/scribe.html");
 });
 
-app.get("/idrs", (req, res) => {
-  res.sendFile(__dirname + "/views/idrs.html");
+app.get("/idrs/:patientId", (req, res) => {
+  const { patientId } = req.params;
+  res.sendFile(__dirname + "/views/idrs.html", { patientId });
 });
 
-app.get("/token", (req, res) => {
-  res.json({ access_token: launchContexts.get("access_token") });
+app.get("/token", async (req, res) => {
+  console.log("MEDWAY_TOKEN:", launchContexts.get("MEDWAY_TOKEN"));
+  res.json({ access_token: launchContexts.get("MEDWAY_TOKEN") });
 });
 
 app.get("/patient/:patientId/data", async (req, res) => {
@@ -161,6 +177,28 @@ app.get("/patient/:patientId/data", async (req, res) => {
 
   const patient = await makeFhirRequest(`/Patient/${patientId}`, access_token);
 
+  const medway_client_id = "External-Partner-Org";
+  const medway_client_secret = "ZM5ox7nRTyWku7JHXwQBDOqD1fiyNdh6";
+
+  const headers = {
+    "Content-Type": "application/x-www-form-urlencoded",
+  };
+
+  const urlencoded_data = new URLSearchParams({
+    client_id: medway_client_id,
+    client_secret: medway_client_secret,
+    grant_type: "client_credentials",
+  });
+
+  const medway_token_response = await axios
+    .post(
+      "https://keyservicesdev.medway.ai/auth/realms/medwayai/protocol/openid-connect/token",
+      urlencoded_data,
+      headers
+    )
+
+  console.log("Medway token response:", medway_token_response.data);
+
   let config = {
     method: "post",
     maxBodyLength: Infinity,
@@ -168,7 +206,7 @@ app.get("/patient/:patientId/data", async (req, res) => {
     headers: {
       "Medway-Physician-Id": "e371920b-7a11-440f-86cf-cb313d7f8b09",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${MEDWAY_TOKEN}`,
+      Authorization: `Bearer ${medway_token_response.data.access_token}`,
     },
     data: sessionData,
   };
@@ -179,7 +217,7 @@ app.get("/patient/:patientId/data", async (req, res) => {
       sessionId = response.data.data.session.sessionId;
       let responseData = {
         sessionId: sessionId,
-        access_token: MEDWAY_TOKEN,
+        access_token: medway_token_response.data.access_token,
         patientName: patient.name[0].given[0] + " " + patient.name[0].family,
       };
       return res.json(responseData);

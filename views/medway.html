@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medway Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f7;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .main-container {
+            width: 100%;
+            height: 85vh;
+            display: flex;
+            gap: 16px;
+            padding: 0 8px 8px 8px;
+        }
+
+        /* Left Panel - Much smaller, compact */
+        .left-panel {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 85vh;
+            padding: 8px 0;
+        }
+
+        /* Recording Section - Dark green box */
+        .recording-section {
+            background: #20332D;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .mic-container {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .mic-container:hover {
+            transform: scale(1.05);
+        }
+
+        .mic-container.recording {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+            50% { box-shadow: 0 4px 16px rgba(255,255,255,0.3); }
+            100% { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        }
+
+        .mic-icon {
+            width: 32px;
+            height: 32px;
+            fill: #000000 !important;
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+
+        .record-button {
+            background: #168967;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .record-button:hover {
+            background: #136d54;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .record-button.recording {
+            background: #dc3545;
+            border: none;
+        }
+
+        .record-button.recording:hover {
+            background: #c82333;
+        }
+
+        /* Smart Insert Section - Updated styling */
+        .smart-insert {
+            position: relative;
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            border: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .smart-insert-content {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .smart-insert-tag {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            align-self: flex-start;
+        }
+
+        .smart-insert textarea {
+            width: 100%;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            transition: all 0.2s;
+            background: transparent;
+            color: #333;
+            line-height: 1.5;
+            flex: 1;
+            outline: none;
+        }
+
+        .smart-insert textarea:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .smart-insert textarea::placeholder {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        /* Right Panel - Takes up most of the space */
+        .right-panel {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #5E6C68E0;
+        }
+
+        .chat-icon-large {
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border-radius: 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+
+        .chat-empty-text {
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 313px;
+        }
+
+        .chat-messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 100%;
+        }
+
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .message-wrapper.user {
+            align-items: flex-end;
+        }
+
+        .message-card {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            border: none;
+        }
+
+        .message-card.user {
+            background: #20332D;
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+        }
+
+        .message-card.assistant {
+            background: #e5e7eb;
+            color: #000;
+            border-radius: 18px 18px 18px 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .typing-card {
+            background: #e5e7eb;
+            border-radius: 18px 18px 18px 4px;
+            max-width: 320px;
+            border: none;
+            padding: 16px;
+        }
+
+        .typing-animation {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+            background: white;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-input-field {
+            flex: 1;
+            border: 1px solid #e5e5e5;
+            border-radius: 25px;
+            padding: 12px 50px 12px 20px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+            font-family: inherit;
+        }
+
+        .chat-input-field:focus {
+            border-color: #20332D;
+        }
+
+        .chat-input-field::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 8px;
+            background: transparent;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: transparent;
+        }
+
+        .send-btn:disabled {
+            background: transparent;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .send-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Voice recording button */
+        .voice-btn {
+            background: #20332D;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .voice-btn:hover {
+            background: #1a2b24;
+        }
+
+        .voice-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        /* Scrollbar styling */
+        .chat-messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-messages-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .chat-messages-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Recording status */
+        .recording-status {
+            display: none;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .recording-status.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Recording Section - Dark green box -->
+            <div class="recording-section">
+                <div class="mic-container" id="micContainer" onclick="toggleRecording()">
+                    <svg class="mic-icon" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.5 2.5V6.1C7.5 6.76304 7.23661 7.39893 6.76777 7.86777C6.29893 8.33661 5.66304 8.6 5 8.6C4.33696 8.6 3.70107 8.33661 3.23223 7.86777C2.76339 7.39893 2.5 6.76304 2.5 6.1V4.5C2.5 4.36739 2.55268 4.24022 2.64645 4.14645C2.74021 4.05268 2.86739 4 3 4C3.13261 4 3.25979 4.05268 3.35355 4.14645C3.44732 4.24022 3.5 4.36739 3.5 4.5V6.1C3.5 6.49783 3.65804 6.87936 3.93934 7.16066C4.22064 7.44197 4.60218 7.6 5 7.6C5.39782 7.6 5.77936 7.44197 6.06066 7.16066C6.34196 6.87936 6.5 6.49783 6.5 6.1V2.5C6.5 2.10218 6.34196 1.72064 6.06066 1.43934C5.77936 1.15804 5.39782 1 5 1C4.60218 1 4.22064 1.15804 3.93934 1.43934C3.65804 1.72064 3.5 2.10218 3.5 2.5C3.5 2.63261 3.44732 2.75979 3.35355 2.85355C3.25979 2.94732 3.13261 3 3 3C2.86739 3 2.74021 2.94732 2.64645 2.85355C2.55268 2.75979 2.5 2.63261 2.5 2.5C2.5 1.83696 2.76339 1.20107 3.23223 0.732233C3.70107 0.263392 4.33696 0 5 0C5.66304 0 6.29893 0.263392 6.76777 0.732233C7.23661 1.20107 7.5 1.83696 7.5 2.5ZM6.32 9.255C5.89929 9.41883 5.45148 9.50195 5 9.5C4.09889 9.52425 3.22484 9.19071 2.56896 8.57232C1.91309 7.95392 1.52875 7.10098 1.5 6.2C1.5 6.06739 1.44732 5.94022 1.35355 5.84645C1.25979 5.75268 1.13261 5.7 1 5.7C0.867392 5.7 0.740215 5.75268 0.646447 5.84645C0.552679 5.94022 0.5 6.06739 0.5 6.2C0.528847 7.36618 1.01857 8.47342 1.86197 9.27934C2.70536 10.0852 3.83371 10.5242 5 10.5C5.57429 10.5007 6.14379 10.3956 6.68 10.19C6.80399 10.1423 6.90393 10.0472 6.95785 9.92579C7.01177 9.80437 7.01524 9.66649 6.9675 9.5425C6.91976 9.41851 6.82472 9.31857 6.70329 9.26465C6.58186 9.21073 6.44399 9.20726 6.32 9.255ZM9 5.7C8.86739 5.7 8.74021 5.75268 8.64645 5.84645C8.55268 5.94022 8.5 6.06739 8.5 6.2C8.50321 6.92811 8.25409 7.63485 7.795 8.2C7.73977 8.27361 7.70592 8.36103 7.69718 8.45263C7.68845 8.54424 7.70516 8.63648 7.74549 8.7192C7.78581 8.80192 7.84818 8.8719 7.92573 8.92145C8.00328 8.97099 8.093 8.99817 8.185 9C8.2597 9.00025 8.3335 8.98377 8.40099 8.95175C8.46848 8.91974 8.52794 8.87301 8.575 8.815C9.17449 8.07543 9.50112 7.15203 9.5 6.2C9.5 6.06739 9.44732 5.94022 9.35355 5.84645C9.25979 5.75268 9.13261 5.7 9 5.7ZM5 11C4.86739 11 4.74021 11.0527 4.64645 11.1464C4.55268 11.2402 4.5 11.3674 4.5 11.5V13.5C4.5 13.6326 4.55268 13.7598 4.64645 13.8536C4.74021 13.9473 4.86739 14 5 14C5.13261 14 5.25979 13.9473 5.35355 13.8536C5.44732 13.7598 5.5 13.6326 5.5 13.5V11.5C5.5 11.3674 5.44732 11.2402 5.35355 11.1464C5.25979 11.0527 5.13261 11 5 11Z" fill="black" transform="translate(2.5, 0)"/>
+                    </svg>
+                </div>
+                <button class="record-button" id="recordButton" onclick="toggleRecording()">Start Recording</button>
+                <div class="recording-status" id="recordingStatus">● Recording in progress...</div>
+            </div>
+
+            <!-- Smart Insert Section - White box below -->
+            <div class="smart-insert">
+                <div class="smart-insert-content">
+                    <div class="smart-insert-tag">Smart Insert</div>
+                    <textarea placeholder="Add your comments" id="commentsTextarea"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="chat-container">
+                <div class="chat-messages-container" id="chatMessagesContainer">
+                    <div class="chat-empty-state" id="chatEmptyState">
+                        <div class="chat-icon-large">
+                            <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.30941 21.5031V41.3464C3.30941 41.785 3.13519 42.2056 2.82508 42.5157C2.51497 42.8258 2.09437 43 1.65581 43C1.21724 43 0.79664 42.8258 0.486528 42.5157C0.176417 42.2056 0.00219816 41.785 0.00219816 41.3464V21.5031C0.00115665 17.8994 0.906076 14.3533 2.63376 11.1908C4.36144 8.02827 6.85644 5.35082 9.88938 3.40461C12.9223 1.45839 16.3959 0.305866 19.9906 0.0529945C23.5854 -0.199877 27.1861 0.455019 30.4616 1.95747C30.6593 2.04868 30.837 2.17791 30.9846 2.3378C31.1323 2.49768 31.247 2.68509 31.3223 2.88931C31.3975 3.09353 31.4318 3.31058 31.4231 3.52805C31.4145 3.74552 31.3631 3.95916 31.2719 4.15677C31.1807 4.35438 31.0515 4.53209 30.8916 4.67976C30.7317 4.82743 30.5443 4.94215 30.3401 5.0174C30.1359 5.09264 29.9188 5.12691 29.7013 5.11827C29.4839 5.10963 29.2702 5.05824 29.0726 4.96704C26.3016 3.69809 23.2563 3.14572 20.2161 3.36068C17.176 3.57565 14.2387 4.55104 11.6738 6.19728C9.10897 7.84351 6.99889 10.1078 5.53737 12.7822C4.07585 15.4566 3.30974 18.4554 3.30941 21.5031ZM37.6218 7.28209C37.3321 6.95354 36.9239 6.75334 36.4867 6.72544C36.0496 6.69754 35.6193 6.84421 35.2902 7.13326C34.9616 7.42294 34.7614 7.83115 34.7335 8.26828C34.7056 8.70541 34.8523 9.13575 35.1413 9.46485C37.4589 12.0901 38.9695 15.3285 39.4916 18.7912C40.0137 22.2539 39.5251 25.7938 38.0846 28.9856C36.6441 32.1775 34.3128 34.8856 31.3708 36.785C28.4287 38.6843 25.001 39.694 21.4991 39.6928H9.92384C9.48528 39.6928 9.06468 39.867 8.75457 40.1771C8.44445 40.4872 8.27023 40.9078 8.27023 41.3464C8.27023 41.785 8.44445 42.2056 8.75457 42.5157C9.06468 42.8258 9.48528 43 9.92384 43H21.4991C25.6365 43.0004 29.6862 41.8068 33.162 39.5624C36.6378 37.3181 39.3921 34.1183 41.0943 30.3473C42.7965 26.5762 43.3743 22.3941 42.7583 18.3028C42.1424 14.2114 40.3588 10.3848 37.6218 7.28209ZM8.27023 21.5031C8.27023 22.1572 8.4642 22.7966 8.8276 23.3405C9.191 23.8844 9.70752 24.3083 10.3118 24.5586C10.9161 24.8089 11.5811 24.8744 12.2227 24.7468C12.8642 24.6192 13.4535 24.3042 13.916 23.8417C14.3785 23.3791 14.6935 22.7899 14.8211 22.1483C14.9487 21.5068 14.8832 20.8418 14.6329 20.2375C14.3826 19.6332 13.9587 19.1167 13.4148 18.7533C12.871 18.3899 12.2316 18.1959 11.5774 18.1959C10.7003 18.1959 9.85912 18.5443 9.2389 19.1646C8.61867 19.7848 8.27023 20.626 8.27023 21.5031ZM18.1919 21.5031C18.1919 22.1572 18.3858 22.7966 18.7492 23.3405C19.1126 23.8844 19.6292 24.3083 20.2335 24.5586C20.8378 24.8089 21.5028 24.8744 22.1443 24.7468C22.7858 24.6192 23.3751 24.3042 23.8376 23.8417C24.3002 23.3791 24.6152 22.7899 24.7428 22.1483C24.8704 21.5068 24.8049 20.8418 24.5546 20.2375C24.3042 19.6332 23.8804 19.1167 23.3365 18.7533C22.7926 18.3899 22.1532 18.1959 21.4991 18.1959C20.622 18.1959 19.7808 18.5443 19.1605 19.1646C18.5403 19.7848 18.1919 20.626 18.1919 21.5031ZM28.1135 21.5031C28.1135 22.1572 28.3075 22.7966 28.6709 23.3405C29.0343 23.8844 29.5508 24.3083 30.1551 24.5586C30.7594 24.8089 31.4244 24.8744 32.0659 24.7468C32.7075 24.6192 33.2968 24.3042 33.7593 23.8417C34.2218 23.3791 34.5368 22.7899 34.6644 22.1483C34.792 21.5068 34.7265 20.8418 34.4762 20.2375C34.2259 19.6332 33.802 19.1167 33.2581 18.7533C32.7143 18.3899 32.0748 18.1959 31.4207 18.1959C30.5436 18.1959 29.7024 18.5443 29.0822 19.1646C28.462 19.7848 28.1135 20.626 28.1135 21.5031Z" fill="#20332D"/>
+                            </svg>
+                        </div>
+                        <div class="chat-empty-text">
+                            Get information on patient history, medical test<br>
+                            and --- in seconds
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages-list" id="chatMessagesList" style="display: none;">
+                        <!-- Messages will be populated here -->
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <input type="text" class="chat-input-field" id="chatInputField" placeholder="Ask MedChat" onkeypress="handleChatKeyPress(event)">
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            <svg width="27" height="28" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.1356 27.5C17.0635 27.5 17.7208 26.701 18.1976 25.4637L26.6391 3.41265C26.8711 2.81981 27 2.29141 27 1.85322C27 1.01551 26.4845 0.5 25.6468 0.5C25.2086 0.5 24.6802 0.628878 24.0874 0.860859L1.92029 9.35394C0.837709 9.76635 0 10.4236 0 11.3644C0 12.5501 0.902148 12.9496 2.13938 13.3234L9.09881 15.437C9.92363 15.6947 10.3876 15.669 10.9418 15.1535L25.0797 1.94344C25.2473 1.78878 25.4406 1.81456 25.5695 1.93055C25.6983 2.05943 25.7112 2.25274 25.5566 2.42029L12.3981 16.6098C11.8955 17.1382 11.8568 17.5764 12.1017 18.4399L14.1508 25.2446C14.5375 26.5463 14.937 27.5 16.1356 27.5Z" fill="#168967"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            // Keep chat empty - don't add any automatic messages
+        });
+
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    // Here you would typically send the audio to your backend for processing
+                    console.log('Recording completed', audioBlob);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                
+                // Update UI
+                document.getElementById('micContainer').classList.add('recording');
+                document.getElementById('recordButton').textContent = 'Stop Recording';
+                document.getElementById('recordButton').classList.add('recording');
+                document.getElementById('recordingStatus').classList.add('active');
+
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                alert('Could not access microphone. Please check your permissions.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            
+            isRecording = false;
+            
+            // Update UI
+            document.getElementById('micContainer').classList.remove('recording');
+            document.getElementById('recordButton').textContent = 'Start Recording';
+            document.getElementById('recordButton').classList.remove('recording');
+            document.getElementById('recordingStatus').classList.remove('active');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInputField');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Simulate AI response (replace with actual API call)
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    simulateAIResponse(message);
+                }, 1000);
+            }
+        }
+
+        function addMessage(type, content) {
+            // Show messages list and hide empty state
+            const emptyState = document.getElementById('chatEmptyState');
+            const messagesList = document.getElementById('chatMessagesList');
+            
+            if (emptyState.style.display !== 'none') {
+                emptyState.style.display = 'none';
+                messagesList.style.display = 'flex';
+            }
+            
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `message-wrapper ${type}`;
+            
+            const messageCard = document.createElement('div');
+            messageCard.className = `message-card ${type}`;
+            messageCard.textContent = content;
+            
+            messageWrapper.appendChild(messageCard);
+            messagesList.appendChild(messageWrapper);
+            
+            // Scroll to bottom
+            const container = document.getElementById('chatMessagesContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesList = document.getElementById('chatMessagesList');
+            
+            const typingWrapper = document.createElement('div');
+            typingWrapper.className = 'typing-indicator';
+            typingWrapper.id = 'typingIndicator';
+            
+            const typingCard = document.createElement('div');
+            typingCard.className = 'typing-card';
+            
+            const typingAnimation = document.createElement('div');
+            typingAnimation.className = 'typing-animation';
+            
+            // Create three dots
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingAnimation.appendChild(dot);
+            }
+            
+            typingCard.appendChild(typingAnimation);
+            typingWrapper.appendChild(typingCard);
+            messagesList.appendChild(typingWrapper);
+            
+            // Scroll to bottom
+            const container = document.getElementById('chatMessagesContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function simulateAIResponse(userMessage) {
+            // This is a simple simulation - replace with actual AI integration
+            let response = '';
+            
+            if (userMessage.toLowerCase().includes('patient')) {
+                response = 'Based on the current patient data, Martin Clark has a history of multifocal pneumonia and acute hypoxemic respiratory failure. Would you like me to provide more specific information about any particular aspect?';
+            } else if (userMessage.toLowerCase().includes('medication') || userMessage.toLowerCase().includes('drug')) {
+                response = 'The patient has documented allergies to gabapentin, morphine, and NSAIDs. Please ensure any new medications are checked against these contraindications.';
+            } else if (userMessage.toLowerCase().includes('vital') || userMessage.toLowerCase().includes('signs')) {
+                response = 'I can help you analyze vital signs. Please specify which vital signs you\'d like me to review or if you need current readings.';
+            } else {
+                response = 'I understand you\'re asking about: "' + userMessage + '". Could you provide more specific details so I can give you the most relevant information about the patient?';
+            }
+            
+            addMessage('assistant', response);
+        }
+
+        function closeWindow() {
+            // This function will be called when closing the popup
+            if (window.parent && window.parent.closeMedwayPopup) {
+                window.parent.closeMedwayPopup();
+            } else {
+                window.close();
+            }
+        }
+
+        // Handle window closing cleanup
+        window.addEventListener('beforeunload', function() {
+            if (isRecording) {
+                stopRecording();
+            }
+        });
+    </script>
+</body>
+</html> 

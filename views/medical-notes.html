@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Notes - Cerner EMR Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            background: #f0f0f0;
+            color: #000;
+            overflow: hidden;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            border-bottom: 1px solid #999;
+            padding: 2px 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            height: 22px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .nav-icon {
+            width: 14px;
+            height: 14px;
+            background: #4a90e2;
+            border-radius: 2px;
+        }
+
+        /* Patient Header */
+        .patient-header {
+            background: linear-gradient(to bottom, #4a90e2, #357abd);
+            color: white;
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #2e5a8a;
+            font-size: 11px;
+        }
+
+        .patient-left {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .patient-avatar {
+            width: 32px;
+            height: 32px;
+            background: #2e5a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .patient-info {
+            line-height: 1.2;
+        }
+
+        .patient-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .patient-details {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        .patient-right {
+            display: flex;
+            gap: 30px;
+            font-size: 10px;
+        }
+
+        .patient-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .patient-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .patient-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .patient-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ccc;
+            padding: 2px 10px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 24px;
+        }
+
+        .menu-text {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .provider-text {
+            margin-right: 15px;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            background: white;
+        }
+
+        /* Left Navigation Sidebar (Dark Blue) */
+        .left-nav-sidebar {
+            width: 140px;
+            background: #2c5aa0;
+            color: white;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+
+        .nav-menu-item {
+            padding: 6px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .nav-menu-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-menu-item.active {
+            background: #4a90e2;
+        }
+
+        .nav-menu-item.has-add {
+            position: relative;
+        }
+
+        .add-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #90c3ff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            color: white;
+        }
+
+        /* Medical Notes Content */
+        .notes-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .notes-header {
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .notes-btn {
+            background: #4a90e2;
+            color: white;
+            border: 1px solid #357abd;
+            padding: 6px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .notes-btn:hover {
+            background: #357abd;
+        }
+
+        .notes-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .notes-btn.secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Notes List */
+        .notes-list {
+            flex: 1;
+            display: flex;
+        }
+
+        /* Note Editor */
+        .note-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .editor-header {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .editor-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .editor-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.4;
+            resize: none;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        .note-textarea:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
+        }
+
+        .dual-textarea-container {
+            flex: 1;
+            display: flex;
+            gap: 0;
+        }
+
+        .left-textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.4;
+            resize: none;
+            outline: none;
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+
+        .right-textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.4;
+            resize: none;
+            outline: none;
+            border-radius: 0 4px 4px 0;
+            border-left: none;
+        }
+
+        .left-textarea:focus, .right-textarea:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .toolbar-btn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .toolbar-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Dot-dot phrases popup */
+        .dotdot-popup {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            min-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .dotdot-popup-header {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ccc;
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .dotdot-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dotdot-item:hover {
+            background: #e6f3ff;
+        }
+
+        .dotdot-item.selected {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .dotdot-item-title {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .dotdot-item-description {
+            font-size: 10px;
+            color: #666;
+            opacity: 0.8;
+        }
+
+        .dotdot-item.selected .dotdot-item-description {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .left-nav-sidebar {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Task</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Edit</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>View</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Patient</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Chart</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Links</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Notifications</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Navigation</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon"></span>
+            <span>Help</span>
+        </div>
+    </div>
+
+    <!-- Patient Header -->
+    <div class="patient-header">
+        <div class="patient-left">
+            <div class="patient-avatar">JD</div>
+            <div class="patient-info">
+                <div class="patient-name">John Doe</div>
+                <div class="patient-details">ALLERGIES: gabapentin, morphine, No Known Food Allergies, NSAIDs; Dose Wt:75.500 kg (07/16/2024)</div>
+                <div class="patient-details">Attending: [PHYSICIAN NAME]</div>
+            </div>
+        </div>
+        <div class="patient-right">
+            <div class="patient-column">
+                <div>DOB: [DATE]</div>
+                <div>XDoct: [ID] New</div>
+                <div>Measured Wt:75.500 kg (07/16/2024)</div>
+            </div>
+            <div class="patient-column">
+                <div>Age: [AGE]</div>
+                <div>Code Status: No Data Available</div>
+                <div>Observation: [LOCATION]</div>
+            </div>
+            <div class="patient-column">
+                <div>MRN: [MRN]</div>
+                <div>Institution: No Data Available</div>
+                <div>Financial Class: [CLASS]</div>
+            </div>
+        </div>
+        <div class="patient-actions">
+            <button class="patient-btn">List</button>
+            <button class="patient-btn">Recent ▼</button>
+        </div>
+    </div>
+
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <span class="menu-text">Menu</span>
+        <span class="provider-text">Documentation</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Navigation Sidebar (Dark Blue) -->
+        <div class="left-nav-sidebar">
+            <div class="nav-menu-item">Menu</div>
+            <div class="nav-menu-item" id="provider-view-btn">Provider View</div>
+            <div class="nav-menu-item">Results Review</div>
+            <div class="nav-menu-item has-add">
+                Orders
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item">Cancelled</div>
+            <div class="nav-menu-item active has-add">
+                Documentation
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item">Outside Records</div>
+            <div class="nav-menu-item has-add">
+                Allergies
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item has-add">
+                Clinical Media
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item">Diagnosis and Problems</div>
+            <div class="nav-menu-item">Form Browser</div>
+            <div class="nav-menu-item">Growth Chart</div>
+            <div class="nav-menu-item">Histories</div>
+            <div class="nav-menu-item">Medications</div>
+            <div class="nav-menu-item">MAR Summary</div>
+            <div class="nav-menu-item has-add">
+                Medication List
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item">Interactive View and ISIQ</div>
+            <div class="nav-menu-item has-add">
+                Notes
+                <span class="add-button">+ Add</span>
+            </div>
+            <div class="nav-menu-item">Patient Information</div>
+            <div class="nav-menu-item">FaceSheet</div>
+            <div class="nav-menu-item">Appointments</div>
+            <div class="nav-menu-item">MAR</div>
+        </div>
+
+        <!-- Medical Notes Content -->
+        <div class="notes-content">
+            <!-- Notes Header -->
+            <div class="notes-header">
+                <div class="notes-title">Medical Documentation</div>
+                <div class="notes-actions">
+                    <button class="notes-btn" id="new-note-btn">+ New Note</button>
+                    <button class="notes-btn secondary">Templates</button>
+                    <button class="notes-btn secondary">Search</button>
+                </div>
+            </div>
+
+            <!-- Notes List and Editor -->
+            <div class="notes-list">
+                <!-- Note Editor -->
+                <div class="note-editor" id="note-editor">
+                    <div class="editor-header">
+                        <div class="editor-title" id="editor-title">Progress Note - Day 3</div>
+                        <div class="editor-meta">
+                            <span>Created: 07/16/2024 14:30</span>
+                            <span>Author: Dr. Smith</span>
+                            <span>Status: Draft</span>
+                        </div>
+                    </div>
+                    <div class="editor-content">
+                        <div class="editor-toolbar">
+                            <button class="toolbar-btn">Bold</button>
+                            <button class="toolbar-btn">Italic</button>
+                            <button class="toolbar-btn">Underline</button>
+                            <button class="toolbar-btn">|</button>
+                            <button class="toolbar-btn">Insert Template</button>
+                            <button class="toolbar-btn">Insert Symbol</button>
+                            <button class="toolbar-btn">Spell Check</button>
+                        </div>
+                        <div class="dual-textarea-container">
+                            <textarea class="left-textarea" id="note-content-left" placeholder="Enter your medical note here...">CHIEF COMPLAINT:
+
+
+HISTORY OF PRESENT ILLNESS:
+
+
+PFSH (Past Medical, Family, Social History):
+
+
+REVIEW OF SYSTEMS:
+
+
+PHYSICAL EXAMINATION:
+
+
+ASSESSMENT/PLAN:
+
+
+FOLLOW-UP INSTRUCTIONS:
+
+</textarea>
+                            <textarea class="right-textarea" id="note-content-right" placeholder="Structured data...">VITALS & MEASUREMENTS:
+Temperature: 97.8°F (36.6°C)
+Blood Pressure: 118/72 mmHg
+Heart Rate: 88 bpm
+Respiratory Rate: 16 breaths/min
+Oxygen Saturation: 99% on room air
+Weight: 82.5 kg
+Height: 168 cm
+BMI: 29.2 kg/m²
+Pain Scale: 2/10
+
+MEDICATIONS:
+Inpatient:
+• Lisinopril 10 mg oral tablet, 10 mg - 1 tab, Oral, Daily
+• Atorvastatin 40 mg oral tablet, 40 mg - 1 tab, Oral, Evening
+• Metformin 500 mg oral tablet, 500 mg - 2 tabs, Oral, BID
+• Aspirin 81 mg oral tablet, 81 mg - 1 tab, Oral, Daily
+• Omeprazole 20 mg oral capsule, 20 mg - 1 cap, Oral, Daily
+• Sertraline 50 mg oral tablet, 50 mg - 1 tab, Oral, Daily
+• Albuterol 90 mcg inhaler, 2 puffs, Inhalation, q4h PRN
+• Acetaminophen 650 mg oral tablet, PRN pain
+
+Home:
+Multivitamin 1 tab daily
+Vitamin D3 2000 IU daily
+
+PROCEDURES/SURGICAL HISTORY:
+• Coronary Angioplasty with Stent Placement (03/15/2024)
+• Echocardiogram, Transthoracic (03/10/2024)
+• Stress Test, Nuclear (02/28/2024)
+• Upper Endoscopy (01/22/2024)
+• Colonoscopy (12/05/2023)
+• CT Chest with Contrast (11/18/2023)
+• Appendectomy, Laparoscopic (2019)
+• Tonsillectomy (2008)
+• Carpal Tunnel Release, Right Hand (2015)
+• Gallbladder Removal, Laparoscopic (2017)
+• Hernia Repair, Inguinal (2012)
+• Cataract Surgery, Left Eye (2021)</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dot-dot phrases popup -->
+    <div class="dotdot-popup" id="dotdot-popup">
+        <div class="dotdot-popup-header">Quick Phrases - MEDWAY</div>
+        <div class="dotdot-item" data-key="fullnote">
+            <div class="dotdot-item-title">Full Note MEDWAY</div>
+            <div class="dotdot-item-description">Insert complete medical note template</div>
+        </div>
+        <div class="dotdot-item" data-key="cc">
+            <div class="dotdot-item-title">CHIEF COMPLAINT MEDWAY</div>
+            <div class="dotdot-item-description">Insert chief complaint template</div>
+        </div>
+        <div class="dotdot-item" data-key="hpi">
+            <div class="dotdot-item-title">HISTORY OF PRESENT ILLNESS MEDWAY</div>
+            <div class="dotdot-item-description">Insert HPI template</div>
+        </div>
+        <div class="dotdot-item" data-key="pfsh">
+            <div class="dotdot-item-title">PFSH MEDWAY</div>
+            <div class="dotdot-item-description">Insert PFSH template</div>
+        </div>
+        <div class="dotdot-item" data-key="ros">
+            <div class="dotdot-item-title">REVIEW OF SYSTEMS MEDWAY</div>
+            <div class="dotdot-item-description">Insert ROS template</div>
+        </div>
+        <div class="dotdot-item" data-key="pe">
+            <div class="dotdot-item-title">PHYSICAL EXAMINATION MEDWAY</div>
+            <div class="dotdot-item-description">Insert physical exam template</div>
+        </div>
+        <div class="dotdot-item" data-key="ap">
+            <div class="dotdot-item-title">ASSESSMENT/PLAN MEDWAY</div>
+            <div class="dotdot-item-description">Insert assessment and plan template</div>
+        </div>
+        <div class="dotdot-item" data-key="fu">
+            <div class="dotdot-item-title">FOLLOW-UP INSTRUCTIONS MEDWAY</div>
+            <div class="dotdot-item-description">Insert follow-up instructions template</div>
+        </div>
+    </div>
+
+    <script>
+        // Get patient ID from URL
+        const patientId = window.location.pathname.split('/').pop();
+        
+        // Dot-dot phrases templates
+        const dotDotTemplates = {
+            fullnote: `CHIEF COMPLAINT:
+Patient presents with chest pain and shortness of breath. Symptoms began this morning around 8 AM and have been progressively worsening. Associated symptoms include nausea and diaphoresis. Patient rates severity as 7 out of 10. Pain worsens with deep inspiration and improves slightly when sitting upright.
+
+
+HISTORY OF PRESENT ILLNESS:
+Patient is a 58-year-old male with a history of hypertension and diabetes mellitus type 2 who presents with acute onset chest pain and shortness of breath. 
+
+The patient reports that symptoms began approximately 4 hours ago while at rest watching television. The chest pain is described as sharp and substernal, radiating to the left arm. The severity is rated 7/10 and occurs with inspiration.
+
+Associated symptoms include: nausea, diaphoresis, and mild dizziness
+Aggravating factors: deep inspiration, lying flat
+Alleviating factors: sitting upright, shallow breathing
+Previous treatments tried: took two nitroglycerin tablets with minimal relief
+
+The patient denies recent trauma, cough, or fever. No recent travel, sick contacts, or dietary changes. Review of medications shows compliance with prescribed antihypertensives and metformin.
+
+
+PFSH (Past Medical, Family, Social History):
+PAST MEDICAL HISTORY:
+Significant for hypertension (diagnosed 2018), diabetes mellitus type 2 (diagnosed 2015), hyperlipidemia (diagnosed 2019), chronic kidney disease stage 3 (diagnosed 2021). Previous hospitalizations include coronary angioplasty with stent placement (March 2024), pneumonia (January 2023). Previous surgeries include appendectomy (2008), cholecystectomy (2016), carpal tunnel repair (2019).
+
+MEDICATIONS:
+Current medications include lisinopril 10mg daily, metformin 1000mg twice daily, atorvastatin 40mg nightly, aspirin 81mg daily, omeprazole 20mg daily. Patient reports good medication compliance. Allergies to gabapentin (rash), morphine (nausea), NSAIDs (GI upset).
+
+FAMILY HISTORY:
+Father deceased at age 72 from myocardial infarction, also had diabetes and hypertension. Mother living at age 78 with osteoporosis and mild dementia. One brother, age 55, with hypertension. One sister, age 60, healthy. Paternal grandfather had diabetes. Maternal grandmother had breast cancer. No known family history of genetic disorders, bleeding disorders, or mental health conditions.
+
+SOCIAL HISTORY:
+Patient works as an accountant, married with two adult children. Lives with spouse in two-story home. Former smoker with 20 pack-year history, quit 10 years ago. Denies current tobacco, illicit drug use. Drinks alcohol socially (2-3 beers per week). Exercises regularly with walking 3-4 times per week. Diet generally healthy but admits to occasional fast food. Has good social support system with family and friends nearby.
+
+
+REVIEW OF SYSTEMS:
+CONSTITUTIONAL: Denies fever, chills, night sweats, unintentional weight loss
+HEENT: Denies headache, vision changes, hearing loss, sore throat, neck pain
+CARDIOVASCULAR: Reports chest pain and palpitations, denies lower extremity edema
+PULMONARY: Reports shortness of breath, denies cough, wheezing, or hemoptysis
+GASTROINTESTINAL: Reports nausea, denies vomiting, diarrhea, constipation, or abdominal pain
+GENITOURINARY: Denies dysuria, frequency, urgency, or hematuria
+MUSCULOSKELETAL: Denies joint pain, muscle weakness, or back pain
+NEUROLOGICAL: Reports mild dizziness, denies headache, weakness, numbness, or seizures
+PSYCHIATRIC: Denies depression, anxiety, or sleep disturbances
+ENDOCRINE: Denies heat or cold intolerance, excessive thirst or urination
+SKIN: Denies rash, skin changes, or easy bruising
+
+
+PHYSICAL EXAMINATION:
+VITAL SIGNS: BP 158/92, HR 102, RR 22, Temp 98.6°F, O2 sat 94% on room air
+
+GENERAL: Alert, oriented x3, appears anxious and in mild distress, diaphoretic
+
+HEENT: PERRL, EOMI, sclera anicteric, conjunctiva clear, TMs clear bilaterally, oropharynx clear without erythema or exudate
+
+NECK: Supple, no lymphadenopathy, no thyromegaly, JVD present at 8 cm
+
+CARDIOVASCULAR: Tachycardic, regular rhythm, S1 S2 present, no murmurs, rubs or gallops, peripheral pulses intact bilaterally
+
+PULMONARY: Decreased breath sounds at bilateral bases, fine crackles in lower lobes, no wheezes or rhonchi
+
+ABDOMEN: Soft, non-tender, non-distended, bowel sounds present in all quadrants, no hepatosplenomegaly, no masses
+
+EXTREMITIES: No cyanosis or clubbing, mild bilateral lower extremity edema, good capillary refill
+
+NEUROLOGICAL: Alert and oriented x3, cranial nerves II-XII intact, motor strength 5/5 throughout, sensation intact, reflexes 2+ throughout
+
+SKIN: Warm, moist, no rash or lesions noted
+
+
+ASSESSMENT/PLAN:
+ASSESSMENT:
+Acute coronary syndrome, NSTEMI - I21.9
+Hypertension, uncontrolled - I10
+Diabetes mellitus type 2, well controlled - E11.9
+
+PLAN:
+1. Cardiology consultation for cardiac catheterization
+2. Continue aspirin, clopidogrel, and atorvastatin therapy
+3. Monitor blood pressure and adjust antihypertensives
+4. Telemetry monitoring and serial troponins
+5. Discharge planning with medication reconciliation
+
+
+FOLLOW-UP INSTRUCTIONS:
+1. Take prescribed heart medications as directed
+2. Cardiology follow-up in 1 week - appointment scheduled
+3. Return for chest pain, shortness of breath, or concerning symptoms
+4. Cardiac rehabilitation enrollment within 2 weeks
+5. Primary care physician follow-up in 2 weeks
+
+`,
+
+            cc: `Patient presents with chest pain and shortness of breath. Symptoms began this morning around 8 AM and have been progressively worsening. Associated symptoms include nausea and diaphoresis. Patient rates severity as 7 out of 10. Pain worsens with deep inspiration and improves slightly when sitting upright.`,
+            
+            hpi: `Patient is a 58-year-old male with a history of hypertension and diabetes mellitus type 2 who presents with acute onset chest pain and shortness of breath. 
+
+The patient reports that symptoms began approximately 4 hours ago while at rest watching television. The chest pain is described as sharp and substernal, radiating to the left arm. The severity is rated 7/10 and occurs with inspiration.
+
+Associated symptoms include: nausea, diaphoresis, and mild dizziness
+Aggravating factors: deep inspiration, lying flat
+Alleviating factors: sitting upright, shallow breathing
+Previous treatments tried: took two nitroglycerin tablets with minimal relief
+
+The patient denies recent trauma, cough, or fever. No recent travel, sick contacts, or dietary changes. Review of medications shows compliance with prescribed antihypertensives and metformin.`,
+
+            pfsh: `PAST MEDICAL HISTORY:
+Significant for hypertension (diagnosed 2018), diabetes mellitus type 2 (diagnosed 2015), hyperlipidemia (diagnosed 2019), chronic kidney disease stage 3 (diagnosed 2021). Previous hospitalizations include coronary angioplasty with stent placement (March 2024), pneumonia (January 2023). Previous surgeries include appendectomy (2008), cholecystectomy (2016), carpal tunnel repair (2019).
+
+MEDICATIONS:
+Current medications include lisinopril 10mg daily, metformin 1000mg twice daily, atorvastatin 40mg nightly, aspirin 81mg daily, omeprazole 20mg daily. Patient reports good medication compliance. Allergies to gabapentin (rash), morphine (nausea), NSAIDs (GI upset).
+
+FAMILY HISTORY:
+Father deceased at age 72 from myocardial infarction, also had diabetes and hypertension. Mother living at age 78 with osteoporosis and mild dementia. One brother, age 55, with hypertension. One sister, age 60, healthy. Paternal grandfather had diabetes. Maternal grandmother had breast cancer. No known family history of genetic disorders, bleeding disorders, or mental health conditions.
+
+SOCIAL HISTORY:
+Patient works as an accountant, married with two adult children. Lives with spouse in two-story home. Former smoker with 20 pack-year history, quit 10 years ago. Denies current tobacco, illicit drug use. Drinks alcohol socially (2-3 beers per week). Exercises regularly with walking 3-4 times per week. Diet generally healthy but admits to occasional fast food. Has good social support system with family and friends nearby.`,
+
+            ros: `CONSTITUTIONAL: Denies fever, chills, night sweats, unintentional weight loss
+HEENT: Denies headache, vision changes, hearing loss, sore throat, neck pain
+CARDIOVASCULAR: Reports chest pain and palpitations, denies lower extremity edema
+PULMONARY: Reports shortness of breath, denies cough, wheezing, or hemoptysis
+GASTROINTESTINAL: Reports nausea, denies vomiting, diarrhea, constipation, or abdominal pain
+GENITOURINARY: Denies dysuria, frequency, urgency, or hematuria
+MUSCULOSKELETAL: Denies joint pain, muscle weakness, or back pain
+NEUROLOGICAL: Reports mild dizziness, denies headache, weakness, numbness, or seizures
+PSYCHIATRIC: Denies depression, anxiety, or sleep disturbances
+ENDOCRINE: Denies heat or cold intolerance, excessive thirst or urination
+SKIN: Denies rash, skin changes, or easy bruising`,
+
+            pe: `VITAL SIGNS: BP 158/92, HR 102, RR 22, Temp 98.6°F, O2 sat 94% on room air
+
+GENERAL: Alert, oriented x3, appears anxious and in mild distress, diaphoretic
+
+HEENT: PERRL, EOMI, sclera anicteric, conjunctiva clear, TMs clear bilaterally, oropharynx clear without erythema or exudate
+
+NECK: Supple, no lymphadenopathy, no thyromegaly, JVD present at 8 cm
+
+CARDIOVASCULAR: Tachycardic, regular rhythm, S1 S2 present, no murmurs, rubs or gallops, peripheral pulses intact bilaterally
+
+PULMONARY: Decreased breath sounds at bilateral bases, fine crackles in lower lobes, no wheezes or rhonchi
+
+ABDOMEN: Soft, non-tender, non-distended, bowel sounds present in all quadrants, no hepatosplenomegaly, no masses
+
+EXTREMITIES: No cyanosis or clubbing, mild bilateral lower extremity edema, good capillary refill
+
+NEUROLOGICAL: Alert and oriented x3, cranial nerves II-XII intact, motor strength 5/5 throughout, sensation intact, reflexes 2+ throughout
+
+SKIN: Warm, moist, no rash or lesions noted`,
+
+            ap: `ASSESSMENT:
+Acute coronary syndrome, NSTEMI - I21.9
+Hypertension, uncontrolled - I10
+Diabetes mellitus type 2, well controlled - E11.9
+
+PLAN:
+1. Cardiology consultation for cardiac catheterization
+2. Continue aspirin, clopidogrel, and atorvastatin therapy
+3. Monitor blood pressure and adjust antihypertensives
+4. Telemetry monitoring and serial troponins
+5. Discharge planning with medication reconciliation`,
+
+            fu: `FOLLOW-UP INSTRUCTIONS:
+1. Take prescribed heart medications as directed
+2. Cardiology follow-up in 1 week - appointment scheduled
+3. Return for chest pain, shortness of breath, or concerning symptoms
+4. Cardiac rehabilitation enrollment within 2 weeks
+5. Primary care physician follow-up in 2 weeks`
+        };
+
+        // Dot-dot phrases functionality
+        let currentTextarea = null;
+        let dotDotPosition = -1;
+        let selectedIndex = 0;
+        const popup = document.getElementById('dotdot-popup');
+        const dotDotItems = document.querySelectorAll('.dotdot-item');
+
+        function showDotDotPopup(textarea, position) {
+            currentTextarea = textarea;
+            dotDotPosition = position;
+            selectedIndex = 0;
+            
+            // Position popup near cursor
+            const rect = textarea.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            
+            popup.style.left = (rect.left + scrollLeft + 20) + 'px';
+            popup.style.top = (rect.top + scrollTop + 60) + 'px';
+            popup.style.display = 'block';
+            
+            updateSelectedItem();
+        }
+
+        function hideDotDotPopup() {
+            popup.style.display = 'none';
+            currentTextarea = null;
+            dotDotPosition = -1;
+        }
+
+        function updateSelectedItem() {
+            dotDotItems.forEach((item, index) => {
+                item.classList.toggle('selected', index === selectedIndex);
+            });
+        }
+
+        function insertTemplate(key) {
+            if (!currentTextarea || dotDotPosition === -1) return;
+            
+            const template = dotDotTemplates[key];
+            if (!template) return;
+            
+            // Special handling for fullnote - replace entire content
+            if (key === 'fullnote') {
+                currentTextarea.value = template;
+                // Position cursor at end of template
+                currentTextarea.setSelectionRange(template.length, template.length);
+                currentTextarea.focus();
+            } else {
+                // Normal insertion behavior for other templates
+                const value = currentTextarea.value;
+                const before = value.substring(0, dotDotPosition - 2); // Remove the ".."
+                const after = value.substring(dotDotPosition);
+                
+                currentTextarea.value = before + template + after;
+                
+                // Position cursor at end of inserted template
+                const newPosition = before.length + template.length;
+                currentTextarea.setSelectionRange(newPosition, newPosition);
+                currentTextarea.focus();
+            }
+            
+            hideDotDotPopup();
+        }
+
+        function handleTextareaInput(textarea) {
+            textarea.addEventListener('input', function(e) {
+                const value = e.target.value;
+                const cursorPos = e.target.selectionStart;
+                
+                // Check if user typed ".."
+                if (value.substring(cursorPos - 2, cursorPos) === '..') {
+                    showDotDotPopup(e.target, cursorPos);
+                } else if (popup.style.display === 'block') {
+                    hideDotDotPopup();
+                }
+            });
+
+            textarea.addEventListener('keydown', function(e) {
+                if (popup.style.display === 'block') {
+                    switch(e.key) {
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            selectedIndex = Math.min(selectedIndex + 1, dotDotItems.length - 1);
+                            updateSelectedItem();
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            selectedIndex = Math.max(selectedIndex - 1, 0);
+                            updateSelectedItem();
+                            break;
+                        case 'Enter':
+                            e.preventDefault();
+                            const selectedItem = dotDotItems[selectedIndex];
+                            if (selectedItem) {
+                                insertTemplate(selectedItem.dataset.key);
+                            }
+                            break;
+                        case 'Escape':
+                            e.preventDefault();
+                            hideDotDotPopup();
+                            break;
+                    }
+                }
+            });
+        }
+
+        // Initialize dot-dot functionality for both textareas
+        const leftTextarea = document.getElementById('note-content-left');
+        const rightTextarea = document.getElementById('note-content-right');
+        
+        if (leftTextarea) handleTextareaInput(leftTextarea);
+        if (rightTextarea) handleTextareaInput(rightTextarea);
+
+        // Handle popup item clicks
+        dotDotItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                insertTemplate(this.dataset.key);
+            });
+            
+            item.addEventListener('mouseenter', function() {
+                selectedIndex = index;
+                updateSelectedItem();
+            });
+        });
+
+        // Hide popup when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!popup.contains(e.target) && !e.target.matches('textarea')) {
+                hideDotDotPopup();
+            }
+        });
+
+        // Handle Provider View navigation
+        document.getElementById('provider-view-btn').addEventListener('click', function() {
+            // Navigate back to patient list with patient ID
+            window.location.href = `/patient-list/${patientId}`;
+        });
+
+        // Handle new note creation
+        document.getElementById('new-note-btn').addEventListener('click', function() {
+            // Clear the editor for new note
+            document.getElementById('editor-title').textContent = 'New Progress Note';
+            document.querySelector('.editor-meta').innerHTML = `
+                <span>Created: ${new Date().toLocaleString()}</span>
+                <span>Author: Dr. Current User</span>
+                <span>Status: Draft</span>
+            `;
+            if (leftTextarea) leftTextarea.value = '';
+            if (rightTextarea) rightTextarea.value = '';
+        });
+
+        // Auto-save functionality
+        let saveTimeout;
+        function setupAutoSave(textarea) {
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(() => {
+                        console.log('Auto-saving note...');
+                        // Auto-save logic would go here
+                    }, 2000);
+                });
+            }
+        }
+        
+        setupAutoSave(leftTextarea);
+        setupAutoSave(rightTextarea);
+
+        // Left navigation sidebar interactions
+        document.querySelectorAll('.left-nav-sidebar .nav-menu-item').forEach((item, index) => {
+            if (!item.id && !item.querySelector('a')) {
+                item.addEventListener('click', function() {
+                    // Remove active class from all nav menu items
+                    document.querySelectorAll('.left-nav-sidebar .nav-menu-item').forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    console.log('Selected menu item:', this.textContent.trim());
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

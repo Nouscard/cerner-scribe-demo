@@ -3,219 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EHR Interface</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>MedScribe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #session-container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <div class="top-nav">
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Tear Off</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Suspend</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Charges</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Exit</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Calculator</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>AdHoc</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Home</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Cardiovascular</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Patient List</span>
-        </div>
-        <div class="nav-item">
-            <span>Perioperative Tracking</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Provider Handoff</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Message Center</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Dynamic Worklist</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>Referral Management</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>UpToDate</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon"></span>
-            <span>DA2</span>
-        </div>
-    </div>
+    <!-- Only the session container for the popup -->
+    <div id="session-container"></div>
 
-    <!-- Patient Header -->
-    <div class="patient-header">
-        <div class="patient-avatar">CT</div>
-        <div class="patient-info">
-            <div class="patient-name">Patrick King</div>
-            <div class="patient-details">
-                Aliases: Shellfish<br>
-                Care Team: Carter, Kristin Cerner
-            </div>
-        </div>
-        <div class="patient-vitals">
-            <div>
-                <div>DOB:4/16/1986</div>
-                <div>Age:39 years</div>
-                <div>MRN:00491105458</div>
-            </div>
-            <div>
-                <div>Sex:Female</div>
-                <div>Dose Wt:100lbs</div>
-                <div>Code Status:Active</div>
-            </div>
-            <div>
-                <div>Height:c: No</div>
-                <div>Clinical Trial:<No Data Available></div>
-                <div>Location:No Data Available</div>
-            </div>
-            <div>
-                <div>Isolation:<No Data Available></div>
-                <div>DT: 0000299162 (Reg Dt: <No - Registration date>) Vis...</div>
-                <div>Observation FIN: 0000299162</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sub Navigation -->
-    <div class="sub-nav">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">←</button>
-        <span class="breadcrumb">Provider View - Edge</span>
-        <div class="toolbar">
-            <button>🔍</button>
-            <button>⚙️</button>
-            <button>70%</button>
-            <button>🔄</button>
-            <button>⏰</button>
-            <button>📄</button>
-            <button>🖨️</button>
-            <span style="font-size: 11px;">🔄 11 minutes ago</span>
-        </div>
-    </div>
-
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">Menu</div>
-                <div class="sidebar-item active">Provider View</div>
-                <div class="sidebar-item">Orders</div>
-                <div class="sidebar-item">Results</div>
-                <div class="sidebar-item">Medications</div>
-                <div class="sidebar-item">Clinical Summary</div>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Patient Tools</div>
-                <div class="sidebar-item">Allergies</div>
-                <div class="sidebar-item">Problems</div>
-                <div class="sidebar-item">Medications</div>
-                <div class="sidebar-item">Immunizations</div>
-                <div class="sidebar-item">Vital Signs</div>
-                <div class="sidebar-item">
-                    <a href="/scribe">Scribe</a>
-                </div>
-                <div class="sidebar-item">
-                    <a href="/idrs">IDRS</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="content">
-            <h1>MedScribe</h1>
-            <div id="session-container"></div>
-        </div>
-    </div>
     <script type="module" src="https://microfrontend.blob.core.windows.net/session-microfront/session-web-component-dev.js"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
-        }
-
-        function toggleSection(header) {
-            const content = header.nextElementSibling;
-            const arrow = header.querySelector('span:last-child');
-            
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                arrow.textContent = '▼';
-            } else {
-                content.classList.add('collapsed');
-                arrow.textContent = '▶';
+        // Get the patient id from the url or parent window
+        let patientId;
+        
+        // Try to get patient ID from URL first
+        const urlPath = window.location.pathname;
+        if (urlPath.includes('/patient/')) {
+            patientId = urlPath.split('/patient/')[1].split('/')[0];
+        } else {
+            // If not in URL, try to get from parent window or default
+            try {
+                patientId = window.parent.location.pathname.split('/').pop();
+            } catch(e) {
+                console.log("Could not access parent window, using default patient ID");
+                patientId = "default";
             }
         }
-
-        // Initialize some sections as collapsed
-        document.addEventListener('DOMContentLoaded', function() {
-            // You can add any initialization code here
-        });
-
-        // fetch the access token from the backend
-        fetch("http://localhost:3000/token")
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error fetching access token:', error);   
-            });
-
-        // get the patient id from the url
-        const patientId = window.location.pathname.split('/').pop();
+        
         console.log("patientId scribe", patientId);
 
         const sessionContainer = document.getElementById('session-container');
-        // add a loading message
+        
+        // Add a minimal loading message
         sessionContainer.innerHTML = `
-            <div>Loading...</div>
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: #666;">
+                Loading MedScribe...
+            </div>
         `;
 
+        // Fetch patient data and load the scribe component
         fetch(`http://localhost:3000/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 sessionContainer.innerHTML = `
-                    <session-web-component session-id="${data.sessionId}" access-token="${data.access_token}" patient-name="${data.patientName}" popup="true"></session-web-component>
+                    <session-web-component 
+                        session-id="${data.sessionId}" 
+                        access-token="${data.access_token}" 
+                        patient-name="${data.patientName}" 
+                        popup="true">
+                    </session-web-component>
                 `;
             })
             .catch(error => {
-                console.error('Error fetching patient data:', error);   
+                console.error('Error fetching patient data:', error);
+                sessionContainer.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; gap: 15px;">
+                        <div style="color: #d32f2f; font-size: 16px; font-weight: bold;">Error Loading MedScribe</div>
+                        <div style="color: #666; font-size: 14px;">Unable to connect to the service. Please try again.</div>
+                    </div>
+                `;
             });
-
-        document.querySelector('a[href="/idrs"]').href = `/idrs/${patientId}`;
     </script>
 </body>
 </html>

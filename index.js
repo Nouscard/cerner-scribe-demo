@@ -102,6 +102,10 @@ app.get("/patient-list/:patientId", (req, res) => {
   res.sendFile(__dirname + "/views/patient-list.html");
 });
 
+app.get("/medical-notes/:patientId", (req, res) => {
+  res.sendFile(__dirname + "/views/medical-notes.html");
+});
+
 app.get("/login-callback", async (req, res) => {
   const { code } = req.query;
   if (!code) {

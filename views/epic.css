@@ -1,0 +1,304 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.top-nav {
+    background-color: #4CCBBA;
+    height: 5%;
+}
+
+.top-nav-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+}
+
+.top-nav-top div span {
+    font-size: 12px;
+}
+
+.top-nav-bottom {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.top-nav-bottom-item {
+    background: #83D8C8;
+    padding: 5px;
+}
+
+.top-nav-bottom-item.selected {
+    background-color: #ffffff;
+    border: none;
+}
+
+.main-content {
+    height: 95%;
+    width: 100%;
+    background-color: #D5EEEC;
+    display: flex;
+}
+
+.main-content-left {
+    width: 10%;
+    padding: 20px;
+    background-color: #D5EEEC;
+}
+
+.main-content-right {
+    flex: 1;
+    background-color: #D5EEEC;
+}
+
+/* Patient Card Styles */
+.patient-card {
+    background-color: #D5EEEC;
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-picture {
+    display: flex;
+    align-items: center;
+}
+
+.profile-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #666;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.action-icon.leaf {
+    background-color: #90EE90;
+}
+
+.action-icon.camera,
+.action-icon.checkbox {
+    background-color: #ccc;
+}
+
+/* Patient Info */
+.patient-info {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.patient-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.patient-nickname {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.patient-details,
+.patient-mrn,
+.patient-acct,
+.patient-fin-class {
+    margin: 2px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.patient-status {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Dividers */
+.divider {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin: 15px 0;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 15px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.section-icon {
+    font-size: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+#outpatient {
+    color: #628dc4;
+}
+
+#balances {
+    color: #757575;
+}
+
+#coverages {
+    color: #ba239f;
+}
+
+#guarantor {
+    color: #027364;
+}
+
+.section-content {
+    margin-left: 0;
+}
+
+/* Outpatient Section */
+.outpatient-date {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.outpatient-clinic {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Balances Section */
+.balances-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.total-balance {
+    text-align: left;
+}
+
+.balance-label {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.balance-amount {
+    margin: 5px 0 0 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.balance-breakdown {
+    text-align: right;
+}
+
+.breakdown-item {
+    margin: 2px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Coverages Section */
+.coverage-item {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Guarantor Section */
+.guarantor-name {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.guarantor-type {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.content-menu {
+    display: flex;
+    gap: 3px;
+    padding-top: 20px;
+    margin-left: 10px;
+}
+
+.content-menu-item {
+    background-color: #C4E4E3;
+    padding: 8px;
+    font-size: 12px;
+    border: 1px solid #83D8C8;
+}
+
+.content-menu-item.selected {
+    background-color: #ffffff;
+    border: none;
+    border-top: 5px solid #03917A;
+}
+
+.main-display {
+    width: 100%;
+    height: 95%;
+    background-color: #ffffff;
+    border: 1px solid #83D8C8;
+}
+
+/* zero decoration for a */
+a {
+    text-decoration: none;
+    color: #000000;
+}

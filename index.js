@@ -247,6 +247,10 @@ app.get("/patient/:patientId/data", async (req, res) => {
     });
 });
 
+app.get("/epic", (req, res) => {
+  res.sendFile(__dirname + "/views/epic.html");
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -11,14 +11,18 @@
     <div class="top-nav">
       <div class="top-nav-top">
         <div>
-          <img src="/media/epic.png" alt="Epic" style="height: 20px; width: 40px;" />
+          <img
+            src="/media/epic.png"
+            alt="Epic"
+            style="height: 20px; width: 40px"
+          />
         </div>
         <div>
           <i class="fa-solid fa-clipboard-question"></i>
           <span>Help Desk</span>
         </div>
         <div>
-          <i class="fa-solid fa-calendar-day" style="color: #dbdbdb;"></i>
+          <i class="fa-solid fa-calendar-day" style="color: #dbdbdb"></i>
           <span>Schedule Explorer</span>
         </div>
         <div>
@@ -26,7 +30,7 @@
           <span>Record Viewer</span>
         </div>
         <div>
-          <i class="fa-solid fa-house" style="color: #dbdbdb;"></i>
+          <i class="fa-solid fa-house" style="color: #dbdbdb"></i>
           <span>Home</span>
         </div>
         <div>
@@ -34,63 +38,63 @@
           <span>Schedule</span>
         </div>
         <div>
-          <i class="fa-solid fa-envelope"  style="color: #a8a73d;"></i>
+          <i class="fa-solid fa-envelope" style="color: #a8a73d"></i>
           <span>In Basket</span>
         </div>
         <div>
-          <i class="fa-solid fa-folder-open" style="color: #3a65ab;"></i>
+          <i class="fa-solid fa-folder-open" style="color: #3a65ab"></i>
           <span>Chart</span>
         </div>
         <div>
-          <i class="fa-solid fa-stethoscope" style="color: #3a65ab;"></i>
+          <i class="fa-solid fa-stethoscope" style="color: #3a65ab"></i>
           <span>Encounter</span>
         </div>
         <div>
-          <i class="fa-solid fa-phone" style="color: #a8a73d;"></i>
+          <i class="fa-solid fa-phone" style="color: #a8a73d"></i>
           <span>Telephone Call</span>
         </div>
         <div>
-          <i class="fa-solid fa-phone" style="color: #a8a73d;"></i>
+          <i class="fa-solid fa-phone" style="color: #a8a73d"></i>
           <span>Triage Call</span>
         </div>
         <div>
-          <i class="fa-solid fa-folder-open" style="color: #3a65ab;"></i>
+          <i class="fa-solid fa-folder-open" style="color: #3a65ab"></i>
           <span>Hospital Chart</span>
         </div>
         <div>
-          <i class="fa-solid fa-bars" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-bars" style="color: #3e6f71"></i>
           <span>Patient Lists</span>
         </div>
         <div>
-          <i class="fa-solid fa-lock" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-lock" style="color: #3e6f71"></i>
           <span>Secure</span>
         </div>
         <div>
-          <i class="fa-solid fa-network-wired" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-network-wired" style="color: #3e6f71"></i>
           <span>Appts</span>
         </div>
         <div>
-          <i class="fa-solid fa-people-group" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-people-group" style="color: #3e6f71"></i>
           <span>Find Patients</span>
         </div>
         <div>
-          <i class="fa-solid fa-binoculars" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-binoculars" style="color: #3e6f71"></i>
           <span>Sheduling</span>
         </div>
         <div>
-          <i class="fa-solid fa-calendar-day" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-calendar-day" style="color: #3e6f71"></i>
           <span>Schedule Admin</span>
         </div>
         <div>
-          <i class="fa-solid fa-people-group" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-people-group" style="color: #3e6f71"></i>
           <span>Find Patients</span>
         </div>
         <div>
-          <i class="fa-solid fa-binoculars" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-binoculars" style="color: #3e6f71"></i>
           <span>Sheduling</span>
         </div>
         <div>
-          <i class="fa-solid fa-calendar-day" style="color: #3e6f71;"></i>
+          <i class="fa-solid fa-calendar-day" style="color: #3e6f71"></i>
           <span>Schedule Admin</span>
         </div>
         <div>
@@ -257,27 +261,36 @@
           <div class="content-menu-item">
             <span>Correspondence ...</span>
           </div>
-          <a href="/epic-medway.html">
-            <div class="content-menu-item">
-              <span>Medway</span>
-            </div>
-          </a>
+          <div class="content-menu-item">
+            <span>Salucro</span>
+          </div>
           <a href="/epic.html">
             <div class="content-menu-item">
               <span>Medscribe</span>
             </div>
           </a>
-          <div class="content-menu-item selected">
-            <span>Medchat</span>
-          </div>
+          <a href="/epic-medchat.html">
+            <div class="content-menu-item">
+              <span>Medchat</span>
+            </div>
+          </a>
           <div class="content-menu-item">
             <span>Telepo...</span>
           </div>
         </div>
 
-        <div class="main-display" id="main-display">
-          <h2>MedChat</h2>
-          <span>Loading...</span>
+        <div
+          class="main-display"
+          id="main-display"
+          style="height: 100%; width: 100%"
+        >
+          <iframe
+            id="medway-iframe"
+            src="http://localhost:3000/medway.html"
+            style="width: 100%; height: 100%; border: none"
+            frameborder="0"
+          >
+          </iframe>
         </div>
       </div>
     </div>
@@ -287,24 +300,4 @@
     src="https://kit.fontawesome.com/701ca11bc9.js"
     crossorigin="anonymous"
   ></script>
-  <script
-    type="module"
-    src="https://microfrontend.blob.core.windows.net/session-microfront/chat-module.js"
-  ></script>
-  <script>
-    let medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
-
-    fetch(`http://localhost:3000/patient/123456Epic/data`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        const sessionContainer = document.getElementById("main-display");
-        sessionContainer.innerHTML = `
-            <chat-module access-token="${data.user_token}" patient-id="${medway_user_id}" thread-id="58"></chat-module>
-        `;
-      })
-      .catch((error) => {
-        console.error("Error fetching patient data:", error);
-      });
-  </script>
 </html>

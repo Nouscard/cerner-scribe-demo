@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scribe-demo-config
+  namespace: scribe-demo
+  labels:
+    app: scribe-demo
+data:
+  PORT: "3000"
+  REDIRECT_URI: "https://scribe-demo.medway.ai/login-callback"
+  SCOPES: "launch launch/patient patient/*.read"
+  NODE_ENV: "production" 

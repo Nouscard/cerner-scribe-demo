@@ -1,27 +1,31 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: bridge-smart-app-ingress
+  name: scribe-demo-ingress
   labels:
-    app: bridge-smart-app
+    app: scribe-demo
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/x-forwarded-proto: "https"
+    nginx.org/client-max-body-size: "300m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - bridge-smart-app.example.com
-    secretName: bridge-smart-app-tls
+    - scribe-demo.medway.ai
+    secretName: scribe-demo-tls
   rules:
-  - host: bridge-smart-app.example.com
+  - host: scribe-demo.medway.ai
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: bridge-smart-app-service
+            name: scribe-demo-service
             port:
               number: 80 

@@ -1,87 +1,79 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bridge-smart-app
-  labels:
-    app: bridge-smart-app
+  name: scribe-demo
+  namespace: scribe-demo
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: bridge-smart-app
+      app: scribe-demo
   template:
     metadata:
       labels:
-        app: bridge-smart-app
+        app: scribe-demo
     spec:
       containers:
-      - name: bridge-smart-app
-        image: bridge-smart-app:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 3000
-          name: http
-        env:
-        - name: PORT
-          value: "3000"
-        - name: AUTH_URL
-          valueFrom:
-            secretKeyRef:
-              name: bridge-smart-app-secrets
-              key: auth-url
-        - name: TOKEN_URL
-          valueFrom:
-            secretKeyRef:
-              name: bridge-smart-app-secrets
-              key: token-url
-        - name: FHIR_BASE
-          valueFrom:
-            secretKeyRef:
-              name: bridge-smart-app-secrets
-              key: fhir-base
-        - name: CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: bridge-smart-app-secrets
-              key: client-id
-        - name: CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: bridge-smart-app-secrets
-              key: client-secret
-        - name: REDIRECT_URI
-          value: "https://bridge-smart-app.example.com/login-callback"
-        - name: SCOPES
-          value: "launch launch/patient patient/*.read"
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsNonRoot: true
-          runAsUser: 1001
-          capabilities:
-            drop:
-            - ALL
+        - name: scribe-demo
+          image: k8sdeveusaksregistry.azurecr.io/scribe-demo:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+          env:
+          - name: PORT
+            value: "3000"
+          - name: AUTH_URL
+            valueFrom:
+              secretKeyRef:
+                name: scribe-demo-secrets
+                key: auth-url
+          - name: TOKEN_URL
+            valueFrom:
+              secretKeyRef:
+                name: scribe-demo-secrets
+                key: token-url
+          - name: FHIR_BASE
+            valueFrom:
+              secretKeyRef:
+                name: scribe-demo-secrets
+                key: fhir-base
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: scribe-demo-secrets
+                key: client-id
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: scribe-demo-secrets
+                key: client-secret
+          - name: REDIRECT_URI
+            value: "https://scribe-demo.medway.ai/login-callback"
+          - name: SCOPES
+            value: "openid fhirUser patient/*.read offline_access user/Patient.read user/AllergyIntolerance.read user/Observation.read user/MedicationRequest.read user/Condition.read"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1001
+            capabilities:
+              drop:
+              - ALL
       securityContext:
-        fsGroup: 1001 
+        fsGroup: 1001
+         

@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: scribe-demo
-  labels:
-    name: scribe-demo
-    app: scribe-demo 

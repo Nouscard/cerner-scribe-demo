@@ -19,38 +19,6 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 3000
-          env:
-          - name: PORT
-            value: "3000"
-          - name: AUTH_URL
-            valueFrom:
-              secretKeyRef:
-                name: scribe-demo-secrets
-                key: auth-url
-          - name: TOKEN_URL
-            valueFrom:
-              secretKeyRef:
-                name: scribe-demo-secrets
-                key: token-url
-          - name: FHIR_BASE
-            valueFrom:
-              secretKeyRef:
-                name: scribe-demo-secrets
-                key: fhir-base
-          - name: CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: scribe-demo-secrets
-                key: client-id
-          - name: CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: scribe-demo-secrets
-                key: client-secret
-          - name: REDIRECT_URI
-            value: "https://scribe-demo.medway.ai/login-callback"
-          - name: SCOPES
-            value: "openid fhirUser patient/*.read offline_access user/Patient.read user/AllergyIntolerance.read user/Observation.read user/MedicationRequest.read user/Condition.read"
           livenessProbe:
             httpGet:
               path: /

@@ -9,6 +9,11 @@ const {
   AUTH_URL,
   CLIENT_ID,
   CLIENT_SECRET,
+  EPIC_CLIENT_ID,
+  EPIC_CLIENT_SECRET,
+  EPIC_AUTH_URL,
+  EPIC_REDIRECT_URI,
+  EPIC_FHIR_BASE,
   TOKEN_URL,
   REDIRECT_URI,
   FHIR_BASE,
@@ -248,6 +253,16 @@ app.get("/patient/:patientId/data", async (req, res) => {
 });
 
 app.get("/epic", (req, res) => {
+  const authUrl = `${EPIC_AUTH_URL}?response_type=code&client_id=${EPIC_CLIENT_ID}&redirect_uri=${encodeURIComponent(
+    EPIC_REDIRECT_URI
+  )}&scope=${encodeURIComponent(
+    SCOPES
+  )}&state=${STATE}&aud=${encodeURIComponent(EPIC_FHIR_BASE)}`;
+
+  res.redirect(authUrl);
+});
+
+app.get("/epic_redirect_url", (req, res) => {
   res.sendFile(__dirname + "/views/epic.html");
 });
 

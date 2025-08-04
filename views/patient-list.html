@@ -1233,7 +1233,7 @@
         <div class="tab-content" id="medway-content" style="display: none; width: 100%; height: 100%; background: white;">
             <iframe 
                 id="medway-iframe"
-                src="http://localhost:3000/medway.html" 
+                src="http://localhost:8000/medway.html" 
                 style="width: 100%; height: 100%; border: none;" 
                 frameborder="0">
             </iframe>
@@ -1282,7 +1282,7 @@
                 
                 const medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
 
-                fetch(`http://localhost:3000/patient/${patientId}/data`)
+                fetch(`http://localhost:8000/patient/${patientId}/data`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(data);
@@ -1318,7 +1318,7 @@
             medscribeContainer.innerHTML = `
                 <iframe 
                     id="medscribe-iframe"
-                    src="http://localhost:3000/scribe.html" 
+                    src="http://localhost:8000/scribe.html" 
                     style="width: 100%; height: 100%; border: none;" 
                     frameborder="0">
                 </iframe>

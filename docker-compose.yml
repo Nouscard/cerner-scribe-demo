@@ -6,14 +6,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - PORT=3000
-      - AUTH_URL=https://your-fhir-system.com/auth
-      - TOKEN_URL=https://your-fhir-system.com/token
-      - FHIR_BASE=https://your-fhir-system.com/fhir
-      - CLIENT_ID=your_client_id
-      - CLIENT_SECRET=your_client_secret
-      - REDIRECT_URI=http://localhost:3000/login-callback
-      - SCOPES=launch launch/patient patient/*.read
+      - PORT=3000 
     volumes:
       - ./views:/app/views
       - ./index.js:/app/index.js

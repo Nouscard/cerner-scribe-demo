@@ -266,6 +266,18 @@ app.get("/epic_redirect_url", (req, res) => {
   res.sendFile(__dirname + "/views/epic.html");
 });
 
+app.get("/test/epic", (req, res) => {
+  data = {
+    epic_auth_url: EPIC_AUTH_URL,
+    epic_client_id: EPIC_CLIENT_ID,
+    epic_redirect_uri: EPIC_REDIRECT_URI,
+    epic_fhir_base: EPIC_FHIR_BASE,
+    scopes: SCOPES,
+    state: STATE,
+  };
+  res.json(data);
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

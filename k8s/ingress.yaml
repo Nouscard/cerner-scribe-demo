@@ -28,4 +28,4 @@ spec:
           service:
             name: scribe-demo-service
             port:
-              number: 80 
+              number: 3001 

@@ -184,7 +184,7 @@
         });
 
         // fetch the access token from the backend
-        fetch("http://localhost:8000/token")
+        fetch("http://localhost:3000/token")
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -205,7 +205,7 @@
 
         let medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
 
-        fetch(`http://localhost:8000/patient/${patientId}/data`)
+        fetch(`http://localhost:3000/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);

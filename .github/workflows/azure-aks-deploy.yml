@@ -1,0 +1,91 @@
+name: Build and Deploy Scribe Demo to Azure AKS
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  ACR_NAME: k8sdeveusaksregistry
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: develop   
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name $ACR_NAME
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{env.ACR_NAME}}.azurecr.io/scribe-demo:latest
+          build-args: |
+            AUTH_URL=${{ secrets.AUTH_URL }}
+            TOKEN_URL=${{ secrets.TOKEN_URL }}
+            FHIR_BASE=${{ secrets.FHIR_BASE }}
+            CLIENT_ID=${{ secrets.CLIENT_ID }}
+            CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+
+
+  deploy-to-aks-dev:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up AKS credentials
+        run: |
+          az aks get-credentials --resource-group k8s-dev-eus-rg --name k8s-dev-eus-aks --overwrite-existing
+
+      - name: Create namespace
+        run: |
+          kubectl create namespace scribe-demo || true
+
+      - name: Create Kubernetes Secret for Environment Variables
+        run: |
+          kubectl create secret generic scribe-demo-secrets \
+            --from-literal=auth-url=${{ secrets.AUTH_URL }} \
+            --from-literal=token-url=${{ secrets.TOKEN_URL }} \
+            --from-literal=fhir-base=${{ secrets.FHIR_BASE }} \
+            --from-literal=client-id=${{ secrets.CLIENT_ID }} \
+            --from-literal=client-secret=${{ secrets.CLIENT_SECRET }} \
+            --namespace scribe-demo || true
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f $GITHUB_WORKSPACE/k8s/deployment.yaml
+          kubectl apply -f $GITHUB_WORKSPACE/k8s/service.yaml
+
+      - name: Force Rollout
+        run: |
+          kubectl rollout restart deployment/scribe-demo --namespace scribe-demo
+
+      - name: Wait for Deployment
+        run: |
+          kubectl rollout status deployment/scribe-demo --namespace scribe-demo 

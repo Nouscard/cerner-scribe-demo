@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scribe-demo
+  namespace: scribe-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: scribe-demo
+  template:
+    metadata:
+      labels:
+        app: scribe-demo
+    spec:
+      containers:
+        - name: scribe-demo
+          image: k8sdeveusaksregistry.azurecr.io/scribe-demo:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1001
+            capabilities:
+              drop:
+              - ALL
+      securityContext:
+        fsGroup: 1001
+         

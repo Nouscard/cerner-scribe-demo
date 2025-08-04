@@ -294,7 +294,7 @@
   <script>
     let medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
 
-    fetch(`http://localhost:3000/patient/123456Epic/data`)
+    fetch(`/patient/123456Epic/data`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

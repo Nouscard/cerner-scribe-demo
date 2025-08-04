@@ -59,7 +59,7 @@
         `;
 
         // Fetch patient data and load the scribe component
-        fetch(`http://localhost:3000/patient/${patientId}/data`)
+        fetch(`/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);

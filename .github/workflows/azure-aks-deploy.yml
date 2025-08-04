@@ -38,6 +38,7 @@ jobs:
             FHIR_BASE=${{ secrets.FHIR_BASE }}
             CLIENT_ID=${{ secrets.CLIENT_ID }}
             CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+            EPIC_CLIENT_SECRET=${{ secrets.EPIC_CLIENT_SECRET }}
 
 
   deploy-to-aks-dev:
@@ -75,6 +76,7 @@ jobs:
             --from-literal=fhir-base=${{ secrets.FHIR_BASE }} \
             --from-literal=client-id=${{ secrets.CLIENT_ID }} \
             --from-literal=client-secret=${{ secrets.CLIENT_SECRET }} \
+            --from-literal=epic-client-secret=${{ secrets.EPIC_CLIENT_SECRET }} \
             --namespace scribe-demo || true
 
       - name: Deploy to AKS

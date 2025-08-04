@@ -23,6 +23,11 @@ ENV CLIENT_ID=$CLIENT_ID
 ENV CLIENT_SECRET=$CLIENT_SECRET
 ENV REDIRECT_URI="https://scribe-demo.medway.ai/login-callback"
 ENV SCOPES="openid fhirUser patient/*.read offline_access user/Patient.read user/AllergyIntolerance.read user/Observation.read user/MedicationRequest.read user/Condition.read"
+ENV EPIC_REDIRECT_URI="https://scribe-demo.medway.ai/epic_redirect_url"
+ENV EPIC_FHIR_BASE="https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+ENV EPIC_AUTH_URL="https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize"
+ENV EPIC_CLIENT_ID="cc334d9c-6d49-45a6-9062-753dd765ee20"
+ENV EPIC_CLIENT_SECRET=$EPIC_CLIENT_SECRET
 
 # Copy package files
 COPY package*.json ./

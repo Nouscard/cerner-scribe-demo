@@ -1,320 +1,1641 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="/epic.css" />
+    <title>Epic EMR Interface</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 11px;
+        background: #f0f0f0;
+        color: #000;
+        overflow: hidden;
+      }
+
+      /* Top Navigation Bar */
+      .top-nav {
+        background: linear-gradient(to bottom, #4a90e2, #357abd);
+        color: white;
+        padding: 4px 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 11px;
+        height: 28px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        cursor: pointer;
+        border-radius: 3px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+      }
+
+      .nav-item:hover {
+        background: rgba(255,255,255,0.2);
+      }
+
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 2px;
+      }
+
+      /* Patient Header */
+      .patient-header {
+        background: linear-gradient(to bottom, #4a90e2, #357abd);
+        color: white;
+        padding: 8px 15px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      /* Tab Navigation */
+      .tab-nav {
+        background: #f8f8f8;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        padding: 0;
+        height: 26px;
+        font-size: 11px;
+      }
+
+      .tab-nav-item {
+        background: #e8e8e8;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        padding: 4px 12px;
+        cursor: pointer;
+        margin-right: 2px;
+        position: relative;
+        top: 1px;
+      }
+
+      .tab-nav-item:hover {
+        background: #f0f0f0;
+      }
+
+      /* Main Container */
+      .main-container {
+        display: flex;
+        height: calc(100vh - 80px);
+        background: white;
+      }
+
+      /* Left Sidebar - Blue */
+      .left-sidebar {
+        width: 200px;
+        background: #2c5aa0;
+        color: white;
+        overflow-y: auto;
+        font-size: 11px;
+      }
+
+      /* Right Documentation Panel */
+      .right-documentation {
+        width: 450px;
+        background: #f8f8f8;
+        border-left: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .doc-header {
+        background: #4a90e2;
+        color: white;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .doc-tabs {
+        background: #e8e8e8;
+        display: flex;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .doc-tab {
+        padding: 6px 12px;
+        font-size: 11px;
+        cursor: pointer;
+        border-right: 1px solid #ccc;
+        background: #e8e8e8;
+      }
+
+      .doc-tab.active {
+        background: white;
+        border-bottom: 1px solid white;
+      }
+
+      .doc-toolbar {
+        background: white;
+        padding: 4px 8px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        font-size: 10px;
+      }
+
+      .doc-toolbar button {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 2px 6px;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .doc-content {
+        flex: 1;
+        background: white;
+        padding: 12px;
+        overflow-y: auto;
+      }
+
+      .doc-textarea {
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+        font-family: inherit;
+        font-size: 11px;
+        outline: none;
+        line-height: 1.4;
+      }
+
+      .doc-footer {
+        background: #f8f8f8;
+        padding: 8px 12px;
+        border-top: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+      }
+
+      .doc-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .doc-btn {
+        background: #4a90e2;
+        color: white;
+        border: none;
+        padding: 4px 12px;
+        font-size: 10px;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+
+      .doc-btn.secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ccc;
+      }
+
+      .patient-info {
+        padding: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+      }
+
+      .patient-name {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .patient-details {
+        font-size: 10px;
+        line-height: 1.3;
+        opacity: 0.9;
+      }
+
+      .sidebar-section {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .section-title {
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .section-item {
+        font-size: 10px;
+        margin-bottom: 3px;
+        padding: 2px 0;
+      }
+
+      .highlight {
+        background: #ff8c00;
+        color: black;
+        padding: 2px 4px;
+        border-radius: 2px;
+        font-weight: bold;
+      }
+
+      /* Main Content Area */
+      .main-content {
+        flex: 1;
+        background: white;
+        overflow-y: auto;
+      }
+
+      /* Content Sections */
+      .content-section {
+        margin: 15px;
+        border: 1px solid #ddd;
+        background: white;
+      }
+
+      .section-header {
+        background: #f8f8f8;
+        border-bottom: 1px solid #ddd;
+        padding: 8px 12px;
+        font-weight: bold;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .section-header.problem-list {
+        color: #d63384;
+      }
+
+      .section-header.visit-diagnoses {
+        color: #d63384;
+      }
+
+      .section-header.medication-mgmt {
+        color: #6f42c1;
+      }
+
+      .section-content {
+        padding: 12px;
+      }
+
+      /* Problem List Table */
+      .problem-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 10px;
+      }
+
+      .problem-table th,
+      .problem-table td {
+        border: 1px solid #ddd;
+        padding: 6px 8px;
+        text-align: left;
+      }
+
+      .problem-table th {
+        background: #f8f8f8;
+        font-weight: bold;
+        font-size: 10px;
+      }
+
+      .problem-table tr:nth-child(even) {
+        background: #f9f9f9;
+      }
+
+      .problem-table tr:hover {
+        background: #e6f3ff;
+      }
+
+      .priority-indicator {
+        color: #666;
+        font-size: 12px;
+      }
+
+      .problem-text {
+        color: #d63384;
+      }
+
+      /* Buttons and Controls */
+      .btn {
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+        font-size: 11px;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+
+      .btn:hover {
+        background: #e8e8e8;
+      }
+
+      .btn-add {
+        background: #28a745;
+        color: white;
+        border: 1px solid #28a745;
+      }
+
+      .search-input {
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        font-size: 11px;
+        width: 200px;
+      }
+
+      /* Diagnosis Grid */
+      .diagnosis-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin: 10px 0;
+      }
+
+      .diagnosis-item {
+        background: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .diagnosis-item:hover {
+        background: #e8e8e8;
+      }
+
+      /* Problem tags */
+      .problem-tags {
+        display: flex;
+        gap: 5px;
+        margin: 10px 0;
+        flex-wrap: wrap;
+      }
+
+      .problem-tag {
+        background: #e9ecef;
+        border: 1px solid #ced4da;
+        padding: 2px 6px;
+        font-size: 10px;
+        border-radius: 3px;
+      }
+
+      /* Tab Content Areas */
+      .tab-content {
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: white;
+      }
+
+      .tab-content.active {
+        display: block !important;
+      }
+
+      /* Main container adjustments for tabs */
+      .main-container.tab-active {
+        background: #f8f8f8 !important;
+        display: block !important;
+        padding: 0;
+        height: calc(100vh - 80px);
+      }
+
+      .main-container.tab-active .right-documentation {
+        display: none;
+      }
+
+      .main-container.tab-active .tab-content.active {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      /* Specific tab content styling */
+      #medway-content,
+      #medchat-content,
+      #medscribe-content {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: transparent;
+      }
+
+      /* Reduce width of medway content specifically */
+      #medway-content {
+        width: 80%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: transparent;
+      }
+
+      /* Reduce width of medchat content similarly */
+      #medchat-content {
+        width: 80%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: transparent;
+      }
+
+      #medchat-content #idrs-container-tab {
+        width: 100%;
+        height: calc(100% - 40px);
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        background: white;
+      }
+
+      #medway-content iframe {
+        width: 100%;
+        height: calc(100% - 40px);
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        background: transparent;
+      }
+
+      /* SmartText Modal */
+      .smarttext-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .smarttext-modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        width: 600px;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .smarttext-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        background: #f8f8f8;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .smarttext-close {
+        cursor: pointer;
+        font-size: 18px;
+        color: #666;
+        padding: 4px;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .smarttext-close:hover {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .smarttext-search {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .smarttext-search input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 12px;
+        outline: none;
+      }
+
+      .smarttext-search input:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
+      }
+
+      .smarttext-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 16px;
+      }
+
+      .smarttext-item {
+        padding: 12px 8px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-bottom: 2px;
+        transition: background-color 0.2s ease;
+      }
+
+      .smarttext-item:last-child {
+        border-bottom: none;
+      }
+
+      .smarttext-item:hover {
+        background: #e6f3ff;
+        border-color: #4a90e2;
+      }
+
+      .smarttext-item-title {
+        font-size: 13px;
+        font-weight: bold;
+        color: #4a90e2;
+        margin-bottom: 4px;
+      }
+
+      .smarttext-item-description {
+        font-size: 11px;
+        color: #666;
+        line-height: 1.3;
+      }
+
+      .smarttext-item:hover .smarttext-item-title {
+        color: #2c5aa0;
+      }
+    </style>
   </head>
   <body>
-    <!-- epic top nav bar -->
-
+    <!-- Top Navigation -->
     <div class="top-nav">
-      <div class="top-nav-top">
-        <div>
-          <img src="/media/epic.png" alt="Epic" style="height: 20px; width: 40px;" />
-        </div>
-        <div>
-          <i class="fa-solid fa-clipboard-question"></i>
-          <span>Help Desk</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-calendar-day" style="color: #dbdbdb;"></i>
-          <span>Schedule Explorer</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-binoculars"></i>
-          <span>Record Viewer</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-house" style="color: #dbdbdb;"></i>
-          <span>Home</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <span>Schedule</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-envelope"  style="color: #a8a73d;"></i>
-          <span>In Basket</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-folder-open" style="color: #3a65ab;"></i>
-          <span>Chart</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-stethoscope" style="color: #3a65ab;"></i>
-          <span>Encounter</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-phone" style="color: #a8a73d;"></i>
-          <span>Telephone Call</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-phone" style="color: #a8a73d;"></i>
-          <span>Triage Call</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-folder-open" style="color: #3a65ab;"></i>
-          <span>Hospital Chart</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-bars" style="color: #3e6f71;"></i>
-          <span>Patient Lists</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-lock" style="color: #3e6f71;"></i>
-          <span>Secure</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-network-wired" style="color: #3e6f71;"></i>
-          <span>Appts</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-people-group" style="color: #3e6f71;"></i>
-          <span>Find Patients</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-binoculars" style="color: #3e6f71;"></i>
-          <span>Sheduling</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-calendar-day" style="color: #3e6f71;"></i>
-          <span>Schedule Admin</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-people-group" style="color: #3e6f71;"></i>
-          <span>Find Patients</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-binoculars" style="color: #3e6f71;"></i>
-          <span>Sheduling</span>
-        </div>
-        <div>
-          <i class="fa-solid fa-calendar-day" style="color: #3e6f71;"></i>
-          <span>Schedule Admin</span>
-        </div>
-        <div>
-          <span>Logout</span>
-        </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>Call Intake</span>
       </div>
-      <div class="top-nav-bottom">
-        <div class="top-nav-bottom-item">
-          <span>🖥️</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>📊</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>📠</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>💾</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>🗂️</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>🩺</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>💉</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>☑️</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>🗓️</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>📁</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>🧭</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>📠</span>
-        </div>
-        <div class="top-nav-bottom-item">
-          <span>👨🏻‍⚕️ My chart, Patrick "K. Patrick"</span>
-        </div>
-        <div class="top-nav-bottom-item selected">
-          <span>👨🏻‍⚕️ My chart, Patrick "K. Patrick" x</span>
-        </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>Take Action</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>Chart Review</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>PDMP</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>Medications</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"></span>
+        <span>Results</span>
       </div>
     </div>
 
-    <div class="main-content">
-      <div class="main-content-left">
-        <div class="patient-card">
-          <!-- Patient info -->
-          <div class="patient-info">
-            <div class="profile-picture">
-              <div class="profile-icon">👤</div>
-            </div>
-            <h2 class="patient-name">King Mychart</h2>
-            <p class="patient-nickname">Patrick K</p>
-            <p class="patient-details">Male, 42 years. 7/26/1979</p>
-            <p class="patient-mrn">MRN: 202499</p>
-            <p class="patient-acct">Acct ID: 82</p>
-            <p class="patient-fin-class">Fin Class: Commercial</p>
-            <p class="patient-status">BILLED</p>
-          </div>
-
-          <hr class="divider" />
-
-          <!-- Outpatient section -->
-          <div class="section">
-            <div class="section-header">
-              <h3 class="section-title" id="outpatient">OUTPATIENT</h3>
-            </div>
-            <div class="section-content">
-              <p class="outpatient-date">11/8/2013 →</p>
-              <p class="outpatient-clinic">SBO CLINIC</p>
-            </div>
-          </div>
-
-          <hr class="divider" />
-
-          <!-- Balances section -->
-          <div class="section">
-            <h3 class="section-title" id="balances">BALANCES</h3>
-            <div class="balances-content">
-              <div class="total-balance">
-                <p class="balance-label">Total</p>
-                <p class="balance-amount">420.50</p>
-              </div>
-              <div class="balance-breakdown">
-                <p class="breakdown-item">Pre: 0.00</p>
-                <p class="breakdown-item">Ins: 158.00</p>
-                <p class="breakdown-item">SP: 262.50</p>
-              </div>
-            </div>
-          </div>
-
-          <hr class="divider" />
-
-          <!-- Coverages section -->
-          <div class="section">
-            <h3 class="section-title" id="coverages">COVERAGES</h3>
-            <div class="section-content">
-              <p class="coverage-item">1 AETNA - AETNA</p>
-            </div>
-          </div>
-
-          <hr class="divider" />
-
-          <!-- Guarantor section -->
-          <div class="section">
-            <h3 class="section-title" id="guarantor">GUARANTOR</h3>
-            <div class="section-content">
-              <p class="guarantor-name">King Mychart "Patrick K" [1057]</p>
-              <p class="guarantor-type">Personal/Family - Self</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="main-content-right">
-        <div class="content-menu">
-          <div class="content-menu-item">
-            <span>Acct Summary</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Guar Summary</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Report Viewer</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Doc Review</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Prof Tx Inquiry</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Liability Buckets</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Coverages</span>
-          </div>
-          <div class="content-menu-item">
-            <span>CDI Review</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Coding</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Abstracting</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Code Integration</span>
-          </div>
-          <div class="content-menu-item">
-            <span>History</span>
-          </div>
-          <div class="content-menu-item">
-            <span>System Actions</span>
-          </div>
-          <div class="content-menu-item">
-            <span>Correspondence ...</span>
-          </div>
-          <a href="/epic-medway.html">
-            <div class="content-menu-item">
-              <span>Medway</span>
-            </div>
-          </a>
-          <div class="content-menu-item selected">
-            <span>Medscribe</span>
-          </div>
-          <a href="/epic-medchat.html">
-            <div class="content-menu-item">
-              <span>Medchat</span>
-            </div>
-          </a>
-          <div class="content-menu-item">
-            <span>Telepo...</span>
-          </div>
-        </div>
-
-        <div class="main-display" id="main-display">
-          <h2>Medscribe</h2>
-          <span>Loading...</span>
-        </div>
-      </div>
+    <!-- Patient Header -->
+    <div class="patient-header">
+      12/1/2023 visit with Fischer, Gary, MD for Telephone
     </div>
-  </body>
 
-  <script
-    type="module"
-    src="https://microfrontend.blob.core.windows.net/session-microfront/session-web-component-dev.js"
-  ></script>
-  <script
-    src="https://kit.fontawesome.com/701ca11bc9.js"
-    crossorigin="anonymous"
-  ></script>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <div class="tab-nav-item active" data-tab="problem-list">Problem List</div>
+      <div class="tab-nav-item">Visit Diagnoses</div>
+      <div class="tab-nav-item">Med Management</div>
+      <div class="tab-nav-item">Charge Capture</div>
+      <div class="tab-nav-item">SmartSets</div>
+      <div class="tab-nav-item">Routing</div>
+      <div class="tab-nav-item">Patient Instructions</div>
+      <div class="tab-nav-item">LOS</div>
+      <div class="tab-nav-item" data-tab="medway">Medway</div>
+      <div class="tab-nav-item" data-tab="medchat">MedChat</div>
+      <div class="tab-nav-item" data-tab="medscribe">MedScribe</div>
+    </div>
 
-  <script>
-    const sessionContainer = document.getElementById("main-display");
-    fetch(`/patient/123456Epic/data`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        sessionContainer.innerHTML = `
-                    <session-web-component
-                        session-id="${data.sessionId}"
-                        access-token="${data.access_token}"
-                        patient-name="${data.patientName}"
-                        popup="true">
-                    </session-web-component>
-                `;
-      })
-      .catch((error) => {
-        console.error("Error fetching patient data:", error);
-        sessionContainer.innerHTML = `
-                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; gap: 15px;">
-                        <div style="color: #d32f2f; font-size: 16px; font-weight: bold;">Error Loading MedScribe</div>
-                        <div style="color: #666; font-size: 14px;">Unable to connect to the service. Please try again.</div>
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Left Sidebar -->
+      <div class="left-sidebar">
+        <!-- Patient Info -->
+        <div class="patient-info">
+          <div class="patient-name">Buba Crayon</div>
+          <div class="patient-details">
+            Legal: Apricot Crayon<br>
+            Nonbinary ⚧, 23 year old,<br>
+            8/19/2000<br><br>
+            Pronouns: they/them/theirs,<br>
+            he/him/his, patient's name<br>
+            Epic MRN: 742024630<br>
+            Phone: 412-123-1234<br>
+            Code Status: None<br>
+            Disability Type: None
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="sidebar-section">
+          <input type="text" placeholder="🔍 Search (Ctrl+Space)" style="width: 100%; padding: 4px; font-size: 10px;">
+        </div>
+
+        <!-- PDMP Website -->
+        <div class="sidebar-section">
+          <div class="section-title">PDMP Website: Never Reviewed</div>
+          <div class="section-title">COVID-19 Vaccine: Unknown</div>
+          <div class="highlight">🔍 Screening Due</div>
+        </div>
+
+        <!-- Provider Info -->
+        <div class="sidebar-section">
+          <div class="section-item">👨‍⚕️ Elkin, Kenneth</div>
+          <div class="section-item">PCP - General</div>
+          <div class="section-item">Coverage: Va/Va Con Optum</div>
+        </div>
+
+        <!-- Allergies -->
+        <div class="sidebar-section">
+          <div class="section-title">Allergies (2)</div>
+        </div>
+
+        <!-- Telephone -->
+        <div class="sidebar-section">
+          <div class="section-title">12/1 TELEPHONE</div>
+          <div class="section-item">[] Fischer, Gary, MD</div>
+          <div class="section-item">No vital signs recorded for this encounter.</div>
+        </div>
+
+        <!-- Since Your Last Visit -->
+        <div class="sidebar-section">
+          <div class="section-title">SINCE YOUR LAST VISIT</div>
+          <div class="section-item">🏠 No visits</div>
+          <div class="section-item">⚠️ No results</div>
+        </div>
+
+        <!-- Next Appointments -->
+        <div class="sidebar-section">
+          <div class="section-item">Next Enc in Dept: 12/1/2023</div>
+          <div class="section-item">Next Appt with me: None</div>
+        </div>
+
+        <!-- Care Gaps -->
+        <div class="sidebar-section">
+          <div class="section-title">CARE GAPS</div>
+          <div class="section-item">🔴 12</div>
+        </div>
+
+        <!-- Problem List -->
+        <div class="sidebar-section">
+          <div class="section-title">PROBLEM LIST</div>
+          <div class="section-item">Unprioritized</div>
+          <div class="section-item">Screening for condition</div>
+          <div class="section-item">Low</div>
+          <div class="section-item">Need for vaccination</div>
+          <div class="section-item">Screening for malignant neoplasm of respiratory</div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Problem List Section -->
+        <div class="content-section">
+          <div class="section-header problem-list">
+            ⬅️ Problem List
+            <div style="margin-left: auto;">
+              <span style="color: #28a745;">+ Care Coordination Note</span>
+            </div>
+          </div>
+          <div class="section-content">
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+              <input type="text" class="search-input" placeholder="Search for problem">
+              <button class="btn btn-add">+ Add</button>
+              <span style="margin-left: auto; font-size: 10px;">Show ☐ Past Problems 🔧</span>
+            </div>
+
+            <table class="problem-table">
+              <thead>
+                <tr>
+                  <th>⚡</th>
+                  <th>Diagnosis</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="priority-indicator">▼</td>
+                  <td>
+                    <div style="background: #e6f3ff; padding: 4px;">
+                      <span class="problem-text">🔍 Screening for condition</span>
+                      <div style="font-size: 10px; color: #666; margin-top: 2px;">
+                        📊 ℹ️ ▼ Unprioritized ⚠️ ❌ ▼
+                      </div>
                     </div>
-                `;
+                  </td>
+                  <td>Unprioritized</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="margin: 15px 0;">
+              <strong>Low</strong>
+            </div>
+
+            <div style="margin: 10px 0;">
+              <div class="problem-text">Screening for malignant neoplasm of respiratory organ</div>
+              <div class="problem-text">Need for vaccination</div>
+              <div class="problem-text">Essential hypertension</div>
+              <div style="font-size: 10px; color: #666; margin: 5px 0;">
+                📁 Overview, History of HTN, BP controlled with medications
+              </div>
+              <div class="problem-text">Encounter for general adult medical examination with abnormal findings</div>
+            </div>
+
+            <div style="margin: 10px 0; font-size: 10px; color: #666;">
+              ✓ Mark as Reviewed | Last Reviewed by Elkin, Kenneth on 6/24/2022 at 9:32 AM
+              <span style="float: right; color: #4a90e2;">Problem List Activity 🔧</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visit Diagnoses Section -->
+        <div class="content-section">
+          <div class="section-header visit-diagnoses">
+            💗 Visit Diagnoses
+          </div>
+          <div class="section-content">
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+              <input type="text" class="search-input" placeholder="Search for diagnosis">
+              <button class="btn btn-add">+ Add</button>
+              <select class="btn">
+                <option>Previous ▼</option>
+              </select>
+              <span style="margin-left: auto;">🔧</span>
+            </div>
+
+            <div class="diagnosis-grid">
+              <div class="diagnosis-item">Common</div>
+              <div class="diagnosis-item">Annual</div>
+              <div class="diagnosis-item">Anticoag</div>
+              <div class="diagnosis-item">Breast Cancer</div>
+              <div class="diagnosis-item">Colon Cancer</div>
+              <div class="diagnosis-item">DM Screening</div>
+              <div class="diagnosis-item">Lipids</div>
+              <div class="diagnosis-item">Med Monitoring</div>
+              <div class="diagnosis-item">Preop</div>
+              <div class="diagnosis-item">PSA</div>
+              <div class="diagnosis-item">Vaccines</div>
+              <div class="diagnosis-item">Viral Test</div>
+              <div class="diagnosis-item">More...</div>
+            </div>
+
+            <div class="problem-tags">
+              <span class="problem-tag">Screening for condition</span>
+              <span class="problem-tag">Need for vaccination</span>
+              <span class="problem-tag">Screening for malign...</span>
+              <span class="problem-tag">Encounter for genera...</span>
+              <span class="problem-tag">Essential hypertension</span>
+              <span style="margin-left: auto;">☰</span>
+            </div>
+
+            <div style="font-size: 10px; color: #666;">
+              No visit diagnoses
+            </div>
+          </div>
+        </div>
+
+        <!-- Medication Management Section -->
+        <div class="content-section">
+          <div class="section-header medication-mgmt">
+            ▼ Medication Management
+            <div style="margin-left: auto;">
+              <span style="color: #28a745;">+ Comments</span>
+            </div>
+          </div>
+          <div class="section-content">
+            <div style="background: #d4edda; padding: 8px; margin-bottom: 10px; border-radius: 3px;">
+              <strong>+ Patient-Reported</strong>
+            </div>
+            <div style="color: #4a90e2; margin-bottom: 10px;">
+              Review open orders ↗
+            </div>
+            <div style="display: flex; gap: 10px; font-size: 10px; color: #666;">
+              <span>📝 Change/Modify (0)</span>
+              <span>🔄 Reorder (0)</span>
+              <span>❌ Discontinue (0)</span>
+              <span>📋 Request Dose (0)</span>
+              <span style="margin-left: auto;">🔧</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Documentation Panel -->
+      <div class="right-documentation">
+        <!-- Documentation Header -->
+        <div class="doc-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>📄</span>
+            <span>Documentation</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 10px;">The Call</span>
+            <span style="cursor: pointer;">✖</span>
+          </div>
+        </div>
+
+        <!-- Documentation Tabs -->
+        <div class="doc-tabs">
+          <div class="doc-tab">📋 View Conversation</div>
+          <div class="doc-tab active">✏️ Create Note</div>
+        </div>
+
+        <!-- Note Type Header -->
+        <div style="background: white; padding: 6px 12px; border-bottom: 1px solid #ccc; font-size: 11px; font-weight: bold;">
+          My Note
+        </div>
+
+        <!-- Documentation Toolbar -->
+        <div class="doc-toolbar">
+          <button>📊</button>
+          <button style="font-weight: bold;">11</button>
+          <button style="font-weight: bold;">B</button>
+          <button>≡</button>
+          <button>⋮</button>
+          <button>📋</button>
+          <button>📤</button>
+          <input type="text" id="smarttext-input" placeholder="Insert SmartText" style="border: 1px solid #ccc; padding: 2px 6px; font-size: 10px; background: white; border-radius: 2px; width: 120px;">
+          <button>↶</button>
+          <button>↷</button>
+          <button>🖨</button>
+          <button>🔄</button>
+        </div>
+
+        <!-- Note Content Area -->
+        <div class="doc-content">
+          <textarea class="doc-textarea" placeholder="Patient has covid -- wants paxlovid">Patient has covid -- wants paxlovid</textarea>
+        </div>
+
+        <!-- Documentation Footer -->
+        <div class="doc-footer">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>❌</span>
+            <span>📋</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>Sign at Exit WS</span>
+            <div class="doc-actions">
+              <button class="doc-btn">✓ Accept</button>
+              <button class="doc-btn secondary">❌ Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SmartText Modal -->
+      <div class="smarttext-modal" id="smarttext-modal" style="display: none;">
+        <div class="smarttext-modal-content">
+          <div class="smarttext-modal-header">
+            <span>📋 SmartText - Medical Acronyms</span>
+            <span class="smarttext-close" id="smarttext-close">✖</span>
+          </div>
+          <div class="smarttext-search">
+            <input type="text" id="smarttext-search-input" placeholder="Search acronyms..." />
+          </div>
+          <div class="smarttext-list" id="smarttext-list">
+            <div class="smarttext-item" data-key="fullnote">
+              <div class="smarttext-item-title">Full Note MEDWAY</div>
+              <div class="smarttext-item-description">Complete medical note template with all sections</div>
+            </div>
+            <div class="smarttext-item" data-key="cc">
+              <div class="smarttext-item-title">Chief Complaint MEDWAY</div>
+              <div class="smarttext-item-description">Standard chief complaint template</div>
+            </div>
+            <div class="smarttext-item" data-key="hpi">
+              <div class="smarttext-item-title">History of Present Illness MEDWAY</div>
+              <div class="smarttext-item-description">HPI template with timing, quality, severity</div>
+            </div>
+            <div class="smarttext-item" data-key="pfsh">
+              <div class="smarttext-item-title">PFSH MEDWAY</div>
+              <div class="smarttext-item-description">Past Medical, Family, Social History template</div>
+            </div>
+            <div class="smarttext-item" data-key="ros">
+              <div class="smarttext-item-title">Review of Systems MEDWAY</div>
+              <div class="smarttext-item-description">Complete 14-point ROS template</div>
+            </div>
+            <div class="smarttext-item" data-key="pe">
+              <div class="smarttext-item-title">Physical Examination MEDWAY</div>
+              <div class="smarttext-item-description">Comprehensive physical exam template</div>
+            </div>
+            <div class="smarttext-item" data-key="ap">
+              <div class="smarttext-item-title">Assessment & Plan MEDWAY</div>
+              <div class="smarttext-item-description">Assessment and plan template</div>
+            </div>
+            <div class="smarttext-item" data-key="fu">
+              <div class="smarttext-item-title">Follow Up MEDWAY</div>
+              <div class="smarttext-item-description">Follow-up instructions template</div>
+            </div>
+            <div class="smarttext-item" data-key="vitals">
+              <div class="smarttext-item-title">Vital Signs MEDWAY</div>
+              <div class="smarttext-item-description">Standard vital signs template</div>
+            </div>
+            <div class="smarttext-item" data-key="allergies">
+              <div class="smarttext-item-title">Allergies MEDWAY</div>
+              <div class="smarttext-item-description">No known drug allergies template</div>
+            </div>
+            <div class="smarttext-item" data-key="meds">
+              <div class="smarttext-item-title">Medications MEDWAY</div>
+              <div class="smarttext-item-description">Current medications list template</div>
+            </div>
+            <div class="smarttext-item" data-key="social">
+              <div class="smarttext-item-title">Social History MEDWAY</div>
+              <div class="smarttext-item-description">Social history template</div>
+            </div>
+            <div class="smarttext-item" data-key="family">
+              <div class="smarttext-item-title">Family History MEDWAY</div>
+              <div class="smarttext-item-description">Family history template</div>
+            </div>
+            <div class="smarttext-item" data-key="neuro">
+              <div class="smarttext-item-title">Neurological Exam MEDWAY</div>
+              <div class="smarttext-item-description">Focused neurological examination</div>
+            </div>
+            <div class="smarttext-item" data-key="cardiac">
+              <div class="smarttext-item-title">Cardiac Exam MEDWAY</div>
+              <div class="smarttext-item-description">Cardiovascular examination template</div>
+            </div>
+            <div class="smarttext-item" data-key="pulm">
+              <div class="smarttext-item-title">Pulmonary Exam MEDWAY</div>
+              <div class="smarttext-item-description">Respiratory system examination</div>
+            </div>
+            <div class="smarttext-item" data-key="abd">
+              <div class="smarttext-item-title">Abdominal Exam MEDWAY</div>
+              <div class="smarttext-item-description">Abdominal examination template</div>
+            </div>
+            <div class="smarttext-item" data-key="msk">
+              <div class="smarttext-item-title">Musculoskeletal Exam MEDWAY</div>
+              <div class="smarttext-item-description">MSK examination template</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medway Tab Content -->
+      <div class="tab-content" id="medway-content" style="display: none;">
+        <iframe 
+          id="medway-iframe"
+          src="http://localhost:3000/medway.html" 
+          style="width: 100%; height: 100%; border: none;" 
+          frameborder="0">
+        </iframe>
+      </div>
+
+      <!-- MedChat Tab Content -->
+      <div class="tab-content" id="medchat-content" style="display: none;">
+        <!-- Only IDRS Chat -->
+        <div id="idrs-container-tab"></div>
+      </div>
+
+      <!-- MedScribe Tab Content -->
+      <div class="tab-content" id="medscribe-content" style="display: none; width: 100%; height: 100%; background: white;">
+        <div id="medscribe-container" style="width: 100%; height: 100%;">
+          <!-- Content will be loaded when tab is clicked -->
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="https://microfrontend.blob.core.windows.net/session-microfront/session-web-component-dev.js"></script>
+    <script type="module" src="https://microfrontend.blob.core.windows.net/session-microfront/chat-module.js"></script>
+    <script>
+      // Get patient ID from URL or use default
+      const patientId = window.location.pathname.split('/').pop() || '123456Epic';
+      console.log("patientId", patientId);
+
+      // Function to load MedChat components directly
+      function loadMedChatInTab(type) {
+        const idrsContainer = document.getElementById('idrs-container-tab');
+
+        if (type === 'idrs') {
+          // Show proper loader with spinner
+          idrsContainer.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%; flex-direction: column; gap: 15px;">
+              <div class="loader" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+              <div style="color: #666; font-size: 14px;">Loading MedChat IDRS...</div>
+            </div>
+          `;
+          
+          const medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
+
+          fetch(`http://localhost:3000/patient/${patientId}/data`)
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              idrsContainer.innerHTML = `
+                <chat-module access-token="${data.user_token}" patient-id="${medway_user_id}" thread-id="58"></chat-module>
+              `;
+            })
+            .catch(error => {
+              console.error('Error loading IDRS:', error);
+              idrsContainer.innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; height: 100%; flex-direction: column; gap: 15px;">
+                  <div style="color: #d32f2f; font-size: 16px; font-weight: bold;">Error Loading MedChat IDRS</div>
+                  <div style="color: #666; font-size: 14px;">Unable to connect to the service. Please try again.</div>
+                </div>
+              `;
+            });
+        }
+      }
+
+      // Function to load MedScribe content
+      function loadMedScribe() {
+        const medscribeContainer = document.getElementById('medscribe-container');
+        
+        // Show loader while loading
+        medscribeContainer.innerHTML = `
+          <div style="display: flex; justify-content: center; align-items: center; height: 100%; flex-direction: column; gap: 15px;">
+            <div class="loader" style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <div style="color: #666; font-size: 14px;">Loading MedScribe...</div>
+          </div>
+        `;
+        
+        // Load the iframe content
+        medscribeContainer.innerHTML = `
+          <iframe 
+            id="medscribe-iframe"
+            src="http://localhost:3000/scribe.html" 
+            style="width: 100%; height: 100%; border: none;" 
+            frameborder="0">
+          </iframe>
+        `;
+      }
+
+      // Function to return to main Epic interface
+      function returnToMain() {
+        // This function is no longer needed since tabs are integrated
+      }
+
+      // Tab navigation
+      document.querySelectorAll('.tab-nav-item').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabType = this.getAttribute('data-tab');
+          
+          // Remove active class from all tabs
+          document.querySelectorAll('.tab-nav-item').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Get main container
+          const mainContainer = document.querySelector('.main-container');
+          
+          if (!tabType || tabType === 'problem-list') {
+            // Show default Epic content
+            mainContainer.classList.remove('tab-active');
+            document.querySelectorAll('.tab-content').forEach(content => {
+              content.classList.remove('active');
+              content.style.display = 'none';
+            });
+            document.querySelector('.main-content').style.display = 'block';
+            document.querySelector('.left-sidebar').style.display = 'block';
+            return;
+          }
+          
+          // Hide default Epic content and show tab content
+          mainContainer.classList.add('tab-active');
+          document.querySelector('.main-content').style.display = 'none';
+          document.querySelector('.left-sidebar').style.display = 'none';
+          document.querySelector('.right-documentation').style.display = 'none';
+          
+          // Hide all tab content areas
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+            content.style.display = 'none';
+          });
+          
+          // Show the corresponding tab content
+          let targetContent = null;
+          
+          switch(tabType) {
+            case 'medchat':
+              targetContent = document.getElementById('medchat-content');
+              // Auto-load only IDRS
+              setTimeout(() => {
+                loadMedChatInTab('idrs');
+              }, 100);
+              break;
+            case 'medway':
+              targetContent = document.getElementById('medway-content');
+              break;
+            case 'medscribe':
+              targetContent = document.getElementById('medscribe-content');
+              // Load MedScribe content when tab is clicked
+              setTimeout(() => {
+                loadMedScribe();
+              }, 100);
+              break;
+          }
+          
+          if (targetContent) {
+            targetContent.classList.add('active');
+            targetContent.style.display = 'block';
+          }
+        });
       });
-  </script>
+
+      // Documentation panel tab switching
+      document.querySelectorAll('.doc-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          if (this.textContent.includes('View Conversation')) {
+            document.querySelector('.doc-content').innerHTML = `
+              <div style="padding: 20px; text-align: center; color: #666;">
+                <p>Conversation history will appear here</p>
+              </div>
+            `;
+          } else {
+            document.querySelector('.doc-content').innerHTML = `
+              <textarea class="doc-textarea" placeholder="Patient has covid -- wants paxlovid">Patient has covid -- wants paxlovid</textarea>
+            `;
+          }
+        });
+      });
+
+      // Auto-save functionality for documentation
+      let saveTimeout;
+      document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('doc-textarea')) {
+          clearTimeout(saveTimeout);
+          saveTimeout = setTimeout(() => {
+            console.log('Auto-saving documentation...');
+            // Add auto-save logic here
+          }, 2000);
+        }
+      });
+
+      // Add spinner animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .tab-nav-item.active {
+          background: white;
+          border-top: 3px solid #4a90e2;
+        }
+      `;
+      document.head.appendChild(style);
+       
+      // Original MedScribe integration for main display (if needed)
+      fetch(`http://localhost:3000/patient/${patientId}/data`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // Data is available for integration if needed
+        })
+        .catch((error) => {
+          console.error("Error fetching patient data:", error);
+        });
+
+      // SmartText Templates
+      const smartTextTemplates = {
+        fullnote: `CHIEF COMPLAINT:
+Chest pain since this morning
+
+
+HISTORY OF PRESENT ILLNESS:
+Mr. Smith is a 67-year-old man who presents with sudden-onset, substernal chest pain that began 4 hours ago while at rest. Pain is described as pressure-like, radiating to the left arm and jaw, rated 8/10, with associated diaphoresis, mild dyspnea, and nausea. No syncope or palpitations reported. He has been having heaviness and tightness in the chest with exertion over the last 3 weeks. He denies fever, cough, or recent illness. No prior similar episode.
+
+
+PAST MEDICAL HISTORY, FAMILY HISTORY, SOCIAL HISTORY:
+Past Medical History:
+Hypertension 
+Hyperlipidemia
+Type 2 Diabetes 
+
+Past Surgical History:
+Appendectomy at age of 13Y
+
+Family History:
+Father died of MI at 69
+Mother with Hypertension
+
+Social History:
+Patient is a retired account, lives with his wife. He has 3 children. 
+He smokes tobacco, 1 pack per day, for 30 years. He drinks socially. No illicit drug use.
+
+Allergies:
+NKDA
+
+Medications:
+Toprol XL 50mg by mouth once daily in the morning
+Atorvastatin 40mg by mouth once daily in the evening
+Metformin 1000mg by mouth twice daily
+
+
+REVIEW OF SYSTEMS:
+General: Weakness and fatigue. No significant weight changes.
+Skin: No rashes, lesions, or itching. No changes in hair or nail texture.
+Head & Neck: No headaches or dizziness. No sore throat or difficulty swallowing.
+Eyes: No blurred vision, double vision, or visual loss. No eye pain or redness.
+ENT: Normal hearing, no tinnitus or vertigo. No nasal or sinus congestion. No oral ulcers.
+CVS: Chest pain and dyspnea on exertion. No palpitations
+Resp: Shortness of breath. No cough or wheezing.
+GI: No nausea, vomiting, diarrhea, constipation, or abdominal pain.
+GU: No frequency, urgency, or dysuria. No hematuria or urinary incontinence.
+MSK: No muscle or joint pain, stiffness, or swelling.
+Neuro: No seizures, tremors, or involuntary movements. No numbness or tingling.
+Heme: No pallor, bleeding, or bruising.
+Psych: No anxiety, depression, or sleep disturbances.
+
+
+PHYSICAL EXAMINATION:
+General: Alert & oriented, cooperative with exam, afebrile.
+Head: Normocephalic and atraumatic.
+Eyes: Pupils equal, round & reactive, normal conjunctiva.
+ENT: Normal hearing, tympanic membranes normal, normal oropharynx, no nasal congestion.
+Neck: Supple. No cervical lymphadenopathy. No jugular vein distension.
+CVS: Regular rate & rhythm, no murmur, normal peripheral pulses, no edema.
+Resp: Nonlabored breathing, chest clear on auscultation, no wheeze or crackles noted.
+GI: Abdomen is soft, non-distended, and non-tender. No hepatosplenomegaly. Normal bowel sounds.
+Musculoskeletal: Full range of motion in all extremities without pain. No swelling or deformity.
+Neuro: CNII-XII grossly intact. Normal sensations. No new focal deficits.
+Skin: Warm and dry. No rashes or bruising.
+Psych: Normal mood and affect. No delusions or hallucinations.
+
+
+ASSESSMENT/PLAN:
+Assessment:
+Chest pain - R07.9
+Acute Coronary syndrome (unstable angina/NSTEMI) - I20
+Essential hypertension - I10
+Hyperlipidemia - E78.2
+Type 2 DM - E11.9
+Nicotine dependence - F17.20
+
+Plan:
+Patient's presentation is worrisome for acute coronary syndrome. Immediate 12-lead EKG performed that shows sinus rhythm and T wave inversions in V1 and V2, but no significant ST deviation noted. We will obtain a stat chest X-ray, and cardiac enzymes. 
+We will give him 325 mg of aspirin and sublingual nitroglycerin 0.4mg. He is already on Atorvastatin 40mg and Toprol XL 50mg daily.
+Acute coronary syndrome needs urgent evaluation in hospital setting with possible need for cardiac catheterization. We will call EMS to send patient to ER for further evaluation and management. Plan explained to patient and his wife and they're in agreement.
+Smoking cessation counseling performed. 
+Follow up in 2 weeks
+
+`,
+
+        cc: `Chest pain since this morning`,
+
+        pfsh: `Past Medical History:
+Hypertension 
+Hyperlipidemia
+Type 2 Diabetes 
+
+Past Surgical History:
+Appendectomy at age of 13Y
+
+Family History:
+Father died of MI at 69
+Mother with Hypertension
+
+Social History:
+Patient is a retired account, lives with his wife. He has 3 children. 
+He smokes tobacco, 1 pack per day, for 30 years. He drinks socially. No illicit drug use.
+
+Allergies:
+NKDA
+
+Medications:
+Toprol XL 50mg by mouth once daily in the morning
+Atorvastatin 40mg by mouth once daily in the evening
+Metformin 1000mg by mouth twice daily`,
+
+        fu: `Follow up in 2 weeks`,
+
+        hpi: `Mr. Smith is a 67-year-old man who presents with sudden-onset, substernal chest pain that began 4 hours ago while at rest. Pain is described as pressure-like, radiating to the left arm and jaw, rated 8/10, with associated diaphoresis, mild dyspnea, and nausea. No syncope or palpitations reported. He has been having heaviness and tightness in the chest with exertion over the last 3 weeks. He denies fever, cough, or recent illness. No prior similar episode.`,
+
+        ros: `General: Weakness and fatigue. No significant weight changes.
+Skin: No rashes, lesions, or itching. No changes in hair or nail texture.
+Head & Neck: No headaches or dizziness. No sore throat or difficulty swallowing.
+Eyes: No blurred vision, double vision, or visual loss. No eye pain or redness.
+ENT: Normal hearing, no tinnitus or vertigo. No nasal or sinus congestion. No oral ulcers.
+CVS: Chest pain and dyspnea on exertion. No palpitations
+Resp: Shortness of breath. No cough or wheezing.
+GI: No nausea, vomiting, diarrhea, constipation, or abdominal pain.
+GU: No frequency, urgency, or dysuria. No hematuria or urinary incontinence.
+MSK: No muscle or joint pain, stiffness, or swelling.
+Neuro: No seizures, tremors, or involuntary movements. No numbness or tingling.
+Heme: No pallor, bleeding, or bruising.
+Psych: No anxiety, depression, or sleep disturbances.`,
+
+        pe: `General: Alert & oriented, cooperative with exam, afebrile.
+Head: Normocephalic and atraumatic.
+Eyes: Pupils equal, round & reactive, normal conjunctiva.
+ENT: Normal hearing, tympanic membranes normal, normal oropharynx, no nasal congestion.
+Neck: Supple. No cervical lymphadenopathy. No jugular vein distension.
+CVS: Regular rate & rhythm, no murmur, normal peripheral pulses, no edema.
+Resp: Nonlabored breathing, chest clear on auscultation, no wheeze or crackles noted.
+GI: Abdomen is soft, non-distended, and non-tender. No hepatosplenomegaly. Normal bowel sounds.
+Musculoskeletal: Full range of motion in all extremities without pain. No swelling or deformity.
+Neuro: CNII-XII grossly intact. Normal sensations. No new focal deficits.
+Skin: Warm and dry. No rashes or bruising.
+Psych: Normal mood and affect. No delusions or hallucinations.`,
+
+        ap: `Assessment:
+Chest pain - R07.9
+Acute Coronary syndrome (unstable angina/NSTEMI) - I20
+Essential hypertension - I10
+Hyperlipidemia - E78.2
+Type 2 DM - E11.9
+Nicotine dependence - F17.20
+
+Plan:
+Patient's presentation is worrisome for acute coronary syndrome. Immediate 12-lead EKG performed that shows sinus rhythm and T wave inversions in V1 and V2, but no significant ST deviation noted. We will obtain a stat chest X-ray, and cardiac enzymes. 
+We will give him 325 mg of aspirin and sublingual nitroglycerin 0.4mg. He is already on Atorvastatin 40mg and Toprol XL 50mg daily.
+Acute coronary syndrome needs urgent evaluation in hospital setting with possible need for cardiac catheterization. We will call EMS to send patient to ER for further evaluation and management. Plan explained to patient and his wife and they're in agreement.
+Smoking cessation counseling performed.`,
+
+        vitals: `VITAL SIGNS:
+Temperature: 98.6°F (37.0°C)
+Blood Pressure: 158/92 mmHg
+Heart Rate: 102 bpm
+Respiratory Rate: 22 breaths/min
+Oxygen Saturation: 94% on room air
+Weight: 82.5 kg
+Height: 168 cm
+BMI: 29.2 kg/m²
+Pain Scale: 8/10`,
+
+        allergies: `ALLERGIES:
+NKDA (No Known Drug Allergies)
+No Known Food Allergies (NKFA)
+No Known Environmental Allergies (NKEA)`,
+
+        meds: `CURRENT MEDICATIONS:
+1. Toprol XL 50mg by mouth once daily in the morning - hypertension
+2. Atorvastatin 40mg by mouth once daily in the evening - hyperlipidemia
+3. Metformin 1000mg by mouth twice daily - Type 2 diabetes
+
+Home Medications:
+All medications taken as prescribed with good compliance`,
+
+        social: `SOCIAL HISTORY:
+OCCUPATION: Retired accountant
+TOBACCO: Current smoker - 1 pack per day for 30 years (30 pack-year history)
+ALCOHOL: Social drinker - occasional use
+ILLICIT DRUGS: Denies any history of illicit drug use
+LIVING SITUATION: Lives with wife, has 3 children
+FUNCTIONAL STATUS: Fully independent in all ADLs
+EXERCISE: Limited due to recent chest discomfort with exertion
+SUPPORT SYSTEM: Good family support with wife and children`,
+
+        family: `FAMILY HISTORY:
+FATHER: Deceased at age 69 - myocardial infarction
+MOTHER: Living - hypertension
+
+SIGNIFICANT FAMILY HISTORY:
+- Cardiovascular Disease: Present - father with MI at age 69
+- Hypertension: Present - mother has hypertension
+- Diabetes: Patient is first in family with diabetes
+- Cancer: No known family history of cancer
+- Mental Health: No known family history of mental health conditions
+- Genetic Disorders: No known genetic disorders`,
+
+        neuro: `NEUROLOGICAL EXAMINATION:
+MENTAL STATUS: Alert, oriented x3, cooperative with exam
+SPEECH: Clear, fluent, appropriate
+CRANIAL NERVES II-XII: Grossly intact, no focal deficits
+MOTOR: Strength 5/5 throughout all extremities, no focal weakness
+SENSATION: Light touch and pinprick intact throughout
+REFLEXES: 2+ and symmetric throughout
+COORDINATION: Intact, no dysmetria
+GAIT: Steady, normal, no ataxia`,
+
+        cardiac: `CARDIOVASCULAR EXAMINATION:
+INSPECTION: No visible abnormalities, no chest wall deformities
+PALPATION: PMI not displaced, no thrills or heaves
+AUSCULTATION: 
+- Rate: 102 bpm (tachycardic)
+- Rhythm: Regular
+- S1: Present and normal
+- S2: Present and normal
+- Murmurs: None appreciated
+- Gallops: No S3 or S4
+- Rubs: No pericardial rub
+
+PERIPHERAL VASCULAR:
+- Peripheral pulses: 2+ and equal bilaterally
+- Capillary refill: <2 seconds
+- Edema: No lower extremity edema`,
+
+        pulm: `PULMONARY EXAMINATION:
+INSPECTION: No accessory muscle use, breathing comfortably
+PALPATION: No chest wall tenderness, normal tactile fremitus
+PERCUSSION: Resonant throughout
+AUSCULTATION:
+- Breath sounds: Clear bilaterally
+- Air entry: Equal and adequate
+- No wheezes, rales, or rhonchi
+- Good air movement throughout
+
+Respiratory rate: 22 breaths/min (slightly elevated)`,
+
+        abd: `ABDOMINAL EXAMINATION:
+INSPECTION: Soft, non-distended, no visible abnormalities
+AUSCULTATION: Normal bowel sounds in all quadrants
+PERCUSSION: Tympanic, normal liver span
+PALPATION:
+- Soft and non-tender throughout
+- No masses or organomegaly
+- No hepatosplenomegaly
+- No rebound or guarding
+- No CVA tenderness`,
+
+        msk: `MUSCULOSKELETAL EXAMINATION:
+GENERAL: No obvious deformities or asymmetry
+
+EXTREMITIES:
+- Full range of motion in all extremities
+- No swelling or deformity
+- No joint tenderness
+- Normal muscle bulk and tone
+- No clubbing or cyanosis
+
+SPINE:
+- No tenderness to palpation
+- Full range of motion
+- No paraspinal muscle spasm
+
+GAIT: Steady and normal`
+      };
+
+      // SmartText Modal Functionality
+      const smartTextModal = document.getElementById('smarttext-modal');
+      const smartTextClose = document.getElementById('smarttext-close');
+      const smartTextSearchInput = document.getElementById('smarttext-search-input');
+      const smartTextList = document.getElementById('smarttext-list');
+      const smartTextInput = document.getElementById('smarttext-input');
+
+      // Function to show SmartText modal
+      function showSmartTextModal() {
+        smartTextModal.style.display = 'flex';
+        smartTextSearchInput.focus();
+      }
+
+      // Function to hide SmartText modal
+      function hideSmartTextModal() {
+        smartTextModal.style.display = 'none';
+        smartTextSearchInput.value = '';
+        filterSmartTextItems('');
+      }
+
+      // Function to filter SmartText items based on search
+      function filterSmartTextItems(searchTerm) {
+        const items = smartTextList.querySelectorAll('.smarttext-item');
+        items.forEach(item => {
+          const title = item.querySelector('.smarttext-item-title').textContent.toLowerCase();
+          const description = item.querySelector('.smarttext-item-description').textContent.toLowerCase();
+          const matches = title.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase());
+          item.style.display = matches ? 'block' : 'none';
+        });
+      }
+
+      // Function to insert SmartText template into documentation textarea
+      function insertSmartTextTemplate(key) {
+        const template = smartTextTemplates[key];
+        if (!template) return;
+
+        const docTextarea = document.querySelector('.doc-textarea');
+        if (docTextarea) {
+          const currentText = docTextarea.value;
+          const cursorPosition = docTextarea.selectionStart;
+          
+          const beforeCursor = currentText.substring(0, cursorPosition);
+          const afterCursor = currentText.substring(cursorPosition);
+          
+          docTextarea.value = beforeCursor + template + afterCursor;
+          
+          // Position cursor at end of inserted template
+          const newPosition = beforeCursor.length + template.length;
+          docTextarea.setSelectionRange(newPosition, newPosition);
+          docTextarea.focus();
+        }
+
+        // Clear the SmartText input and hide modal
+        if (smartTextInput) {
+          smartTextInput.value = '';
+        }
+        hideSmartTextModal();
+      }
+
+      // Event listeners for SmartText functionality
+      if (smartTextInput) {
+        // Show modal when clicking on input (only if 3+ characters)
+        smartTextInput.addEventListener('click', function() {
+          if (this.value.trim().length >= 3) {
+            showSmartTextModal();
+            // Sync the search input in modal with the toolbar input
+            if (smartTextSearchInput) {
+              smartTextSearchInput.value = this.value;
+              filterSmartTextItems(this.value);
+            }
+          }
+        });
+
+        // Handle input to automatically show modal when 3+ characters are typed
+        smartTextInput.addEventListener('input', function() {
+          if (this.value.trim().length >= 3) {
+            showSmartTextModal();
+            // Sync the search input in modal with the toolbar input
+            if (smartTextSearchInput) {
+              smartTextSearchInput.value = this.value;
+              filterSmartTextItems(this.value);
+            }
+          } else if (this.value.trim().length < 3) {
+            // Hide modal if less than 3 characters
+            hideSmartTextModal();
+          }
+        });
+
+        // Handle Enter key to open modal and filter results (only if 3+ characters)
+        smartTextInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && this.value.trim().length >= 3) {
+            e.preventDefault();
+            showSmartTextModal();
+            // Sync the search input in modal with the toolbar input
+            if (smartTextSearchInput) {
+              smartTextSearchInput.value = this.value;
+              filterSmartTextItems(this.value);
+            }
+            // If there's a search term and only one visible item, select it
+            const visibleItems = Array.from(smartTextList.querySelectorAll('.smarttext-item')).filter(item => 
+              item.style.display !== 'none'
+            );
+            if (visibleItems.length === 1) {
+              const key = visibleItems[0].getAttribute('data-key');
+              insertSmartTextTemplate(key);
+            }
+          }
+        });
+      }
+
+      if (smartTextClose) {
+        smartTextClose.addEventListener('click', hideSmartTextModal);
+      }
+
+      if (smartTextSearchInput) {
+        smartTextSearchInput.addEventListener('input', function() {
+          filterSmartTextItems(this.value);
+          // Also update the toolbar input to match
+          if (smartTextInput) {
+            smartTextInput.value = this.value;
+          }
+        });
+      }
+
+      // Handle SmartText item clicks
+      if (smartTextList) {
+        smartTextList.addEventListener('click', function(e) {
+          const item = e.target.closest('.smarttext-item');
+          if (item) {
+            const key = item.getAttribute('data-key');
+            insertSmartTextTemplate(key);
+          }
+        });
+      }
+
+      // Handle keyboard navigation in SmartText modal
+      if (smartTextModal) {
+        smartTextModal.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            hideSmartTextModal();
+          }
+        });
+
+        // Close modal when clicking outside
+        smartTextModal.addEventListener('click', function(e) {
+          if (e.target === smartTextModal) {
+            hideSmartTextModal();
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

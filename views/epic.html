@@ -425,6 +425,15 @@
         height: 100% !important;
       }
 
+      /* Specifically allow the chat module to define its own styles */
+      #medchat-content #idrs-container-tab chat-module {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+      }
+
       /* Specific tab content styling */
       #medway-content,
       #medchat-content,
@@ -451,14 +460,32 @@
         margin: 0 auto;
         padding: 20px;
         background: transparent;
+        /* CSS containment to isolate the microfrontend */
+        contain: layout style;
+        isolation: isolate;
       }
 
+      /* Proper styling for the idrs container */
       #medchat-content #idrs-container-tab {
         width: 100%;
         height: calc(100% - 40px);
         border-radius: 8px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         background: white;
+        
+        /* Isolate the microfrontend from parent styles */
+        position: relative;
+        z-index: 1;
+        
+        /* Prevent parent styles from cascading */
+        contain: layout style paint;
+        isolation: isolate;
+        
+        /* Reset any inherited font properties */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #333;
       }
 
       #medway-content iframe {
@@ -1045,13 +1072,57 @@
           
           const medway_user_id = "44ddec32-a189-492e-83e6-230866b0cfa0";
 
+          /* ALTERNATIVE IFRAME APPROACH FOR COMPLETE ISOLATION:
+           * If the CSS isolation above doesn't work perfectly, you can use this iframe approach instead:
+           * 
+           * fetch(`http://localhost:3000/patient/${patientId}/data`)
+           *   .then(response => response.json())
+           *   .then(data => {
+           *     const iframeUrl = `http://localhost:3000/medchat-embed.html?token=${encodeURIComponent(data.user_token)}&patientId=${encodeURIComponent(medway_user_id)}&threadId=58`;
+           *     idrsContainer.innerHTML = `
+           *       <iframe 
+           *         id="medchat-iframe"
+           *         src="${iframeUrl}" 
+           *         style="width: 100%; height: 100%; border: none; border-radius: 8px;" 
+           *         frameborder="0"
+           *         sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
+           *       </iframe>
+           *     `;
+           *   });
+           * 
+           * This requires creating a separate medchat-embed.html file that just contains the chat-module
+           * with minimal styling and no interference from the parent page.
+           */
+
           fetch(`http://localhost:3000/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
               console.log(data);
+              
+              // Create isolated container for the chat module
               idrsContainer.innerHTML = `
-                <chat-module access-token="${data.user_token}" patient-id="${medway_user_id}" thread-id="58"></chat-module>
+                <div id="chat-module-wrapper" style="width: 100%; height: 100%; isolation: isolate; contain: layout style paint;">
+                  <chat-module access-token="${data.user_token}" patient-id="${medway_user_id}" thread-id="58"></chat-module>
+                </div>
               `;
+              
+              // Additional isolation after the component loads
+              setTimeout(() => {
+                const chatModule = idrsContainer.querySelector('chat-module');
+                if (chatModule) {
+                  // Ensure the chat module has its own styling context
+                  chatModule.style.cssText = 'display: block !important; width: 100% !important; height: 100% !important; isolation: isolate !important; contain: layout style paint !important;';
+                  
+                  // Create a style element to reset any inherited styles
+                  const resetStyles = document.createElement('style');
+                  resetStyles.textContent = `
+                    #idrs-container-tab chat-module * {
+                      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+                    }
+                  `;
+                  document.head.appendChild(resetStyles);
+                }
+              }, 1000);
             })
             .catch(error => {
               console.error('Error loading IDRS:', error);

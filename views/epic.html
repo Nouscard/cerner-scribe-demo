@@ -920,7 +920,25 @@
 
         <!-- Note Content Area -->
         <div class="doc-content">
-          <textarea class="doc-textarea" placeholder="Patient has covid -- wants paxlovid">Patient has covid -- wants paxlovid</textarea>
+          <textarea class="doc-textarea" placeholder="">CHIEF COMPLAINT:
+
+
+HISTORY OF PRESENT ILLNESS:
+
+
+PAST MEDICAL HISTORY, FAMILY HISTORY, SOCIAL HISTORY:
+
+
+REVIEW OF SYSTEMS:
+
+
+PHYSICAL EXAMINATION:
+
+
+ASSESSMENT/PLAN:
+
+
+</textarea>
         </div>
 
         <!-- Documentation Footer -->
@@ -1245,7 +1263,25 @@
             `;
           } else {
             document.querySelector('.doc-content').innerHTML = `
-              <textarea class="doc-textarea" placeholder="Patient has covid -- wants paxlovid">Patient has covid -- wants paxlovid</textarea>
+              <textarea class="doc-textarea" placeholder="">CHIEF COMPLAINT:
+
+
+HISTORY OF PRESENT ILLNESS:
+
+
+PAST MEDICAL HISTORY, FAMILY HISTORY, SOCIAL HISTORY:
+
+
+REVIEW OF SYSTEMS:
+
+
+PHYSICAL EXAMINATION:
+
+
+ASSESSMENT/PLAN:
+
+
+</textarea>
             `;
           }
         });
@@ -1260,6 +1296,28 @@
             console.log('Auto-saving documentation...');
             // Add auto-save logic here
           }, 2000);
+          
+          // Check for ".." trigger in textarea
+          const textarea = e.target;
+          const text = textarea.value;
+          const cursorPosition = textarea.selectionStart;
+          
+          // Check if the last two characters before cursor are ".."
+          if (cursorPosition >= 2 && text.substring(cursorPosition - 2, cursorPosition) === '..') {
+            // Remove the ".." from textarea
+            const beforeDots = text.substring(0, cursorPosition - 2);
+            const afterCursor = text.substring(cursorPosition);
+            textarea.value = beforeDots + afterCursor;
+            textarea.setSelectionRange(cursorPosition - 2, cursorPosition - 2);
+            
+            // Show SmartText modal
+            showSmartTextModal();
+            // Clear the search input for fresh search
+            if (smartTextSearchInput) {
+              smartTextSearchInput.value = '';
+              filterSmartTextItems('');
+            }
+          }
         }
       });
 
@@ -1608,6 +1666,9 @@ GAIT: Steady and normal`
           const newPosition = beforeCursor.length + template.length;
           docTextarea.setSelectionRange(newPosition, newPosition);
           docTextarea.focus();
+          
+          // Trigger auto-save
+          docTextarea.dispatchEvent(new Event('input'));
         }
 
         // Clear the SmartText input and hide modal

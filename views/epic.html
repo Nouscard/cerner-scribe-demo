@@ -1072,7 +1072,8 @@ ASSESSMENT/PLAN:
     <script type="module" src="https://microfrontend.blob.core.windows.net/session-microfront/chat-module.js"></script>
     <script>
       // Get patient ID from URL or use default
-      const patientId = window.location.pathname.split('/').pop() || '123456Epic';
+      // Use the fixed test patient for this environment
+      const patientId = '123456Epic';
       console.log("patientId", patientId);
 
       // Function to load MedChat components directly

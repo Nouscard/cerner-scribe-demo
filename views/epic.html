@@ -1048,7 +1048,7 @@ ASSESSMENT/PLAN:
       <div class="tab-content" id="medway-content" style="display: none;">
         <iframe 
           id="medway-iframe"
-          src="http://localhost:3000/medway.html" 
+          src="medway.html" 
           style="width: 100%; height: 100%; border: none;" 
           frameborder="0">
         </iframe>
@@ -1113,7 +1113,7 @@ ASSESSMENT/PLAN:
            * with minimal styling and no interference from the parent page.
            */
 
-          fetch(`http://localhost:3000/patient/${patientId}/data`)
+          fetch(`/patient/${patientId}/data`)
             .then(response => response.json())
             .then(data => {
               console.log(data);
@@ -1337,7 +1337,7 @@ ASSESSMENT/PLAN:
       document.head.appendChild(style);
        
       // Original MedScribe integration for main display (if needed)
-      fetch(`http://localhost:3000/patient/${patientId}/data`)
+      fetch(`/patient/${patientId}/data`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
